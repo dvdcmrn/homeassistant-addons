@@ -1,0 +1,12 @@
+{
+  "domain": "pinnacles",
+  "name": "Pinnacles Integration",
+  "version": "1.0.0",
+  "documentation": "https://github.com/yourusername/pinnacles-ha",
+  "requirements": [],
+  "codeowners": [
+    "@yourusername"
+  ],
+  "iot_class": "local_polling",
+  "integration_type": "system"
+}
