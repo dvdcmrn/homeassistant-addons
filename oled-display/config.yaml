@@ -1,0 +1,80 @@
+name: "OLED System Monitor"
+description: "Customizable system stats display for OLED screens"
+version: "1.0.0"
+slug: "oled_display"
+init: false
+arch:
+  - aarch64
+  - armhf
+  - armv7
+startup: application
+boot: auto
+devices:
+  - /dev/i2c-1
+gpio: true
+privileged:
+  - SYS_RAWIO
+options:
+  display:
+    type: "sh1106"
+    i2c_address: "0x3C"
+    width: 128
+    height: 64
+    rotate: 0
+    contrast: 255
+  system:
+    update_interval: 1
+    title: "HEIMDALL"
+    show_title: true
+    show_temperature: true
+  metrics:
+    - type: "cpu"
+      position: 1
+      show_bar: true
+      label: "CPU"
+    - type: "memory"
+      position: 2
+      show_bar: true
+      label: "RAM"
+    - type: "disk"
+      position: 3
+      show_bar: true
+      label: "DISK"
+      mount_point: "/"
+  custom_text:
+    enabled: false
+    position: 4
+    text: "Home Assistant"
+  network:
+    show_ip: false
+    position: 5
+    interface: "eth0"
+    label: "IP"
+schema:
+  display:
+    type: list(ssd1306|sh1106)
+    i2c_address: str
+    width: int
+    height: int
+    rotate: list(0|1|2|3)
+    contrast: int(0,255)
+  system:
+    update_interval: int(1,60)
+    title: str
+    show_title: bool
+    show_temperature: bool
+  metrics:
+    - type: list(cpu|memory|disk|temperature|uptime)
+      position: int(1,10)
+      show_bar: bool
+      label: str
+      mount_point: str?
+  custom_text:
+    enabled: bool
+    position: int(1,10)
+    text: str
+  network:
+    show_ip: bool
+    position: int(1,10)
+    interface: str
+    label: str
