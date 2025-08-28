@@ -11,6 +11,7 @@ startup: application
 boot: auto
 devices:
   - /dev/i2c-1
+  - /dev/i2c-0
 gpio: true
 privileged:
   - SYS_RAWIO
@@ -18,6 +19,7 @@ options:
   display:
     type: "sh1106"
     i2c_address: "0x3C"
+    i2c_port: "auto"
     width: 128
     height: 64
     rotate: 0
@@ -27,6 +29,7 @@ options:
     title: "HEIMDALL"
     show_title: true
     show_temperature: true
+    debug_mode: false
   metrics:
     - type: "cpu"
       position: 1
@@ -54,6 +57,7 @@ schema:
   display:
     type: list(ssd1306|sh1106)
     i2c_address: str
+    i2c_port: str
     width: int
     height: int
     rotate: list(0|1|2|3)
@@ -63,6 +67,7 @@ schema:
     title: str
     show_title: bool
     show_temperature: bool
+    debug_mode: bool
   metrics:
     - type: list(cpu|memory|disk|temperature|uptime)
       position: int(1,10)
