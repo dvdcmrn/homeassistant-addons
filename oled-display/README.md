@@ -10,6 +10,8 @@ This add-on displays system information on an OLED display connected to your Hom
 - Network information display
 - Custom text support
 - Visual bar graphs for usage metrics
+- Automatic I2C device detection
+- Debug mode for testing without OLED display
 
 ## Installation
 
@@ -36,6 +38,7 @@ Make sure I2C is enabled on your Home Assistant device.
 |--------|-------------|---------|
 | `type` | Display type (ssd1306 or sh1106) | sh1106 |
 | `i2c_address` | I2C address of the display (usually 0x3C) | 0x3C |
+| `i2c_port` | I2C port (auto, 0, 1, etc.) | auto |
 | `width` | Display width in pixels | 128 |
 | `height` | Display height in pixels | 64 |
 | `rotate` | Display rotation (0, 1, 2, 3) | 0 |
@@ -49,6 +52,7 @@ Make sure I2C is enabled on your Home Assistant device.
 | `title` | Title to display | HEIMDALL |
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
+| `debug_mode` | Run in debug mode (console output only) | false |
 
 ### Metrics
 
@@ -79,6 +83,39 @@ You can configure multiple metrics to display. Each metric has:
 | `interface` | Network interface to use | eth0 |
 | `label` | Label for IP address | IP |
 
+## Troubleshooting
+
+### I2C Device Not Found
+
+If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`, try these steps:
+
+1. **Enable I2C in Home Assistant:**
+   - Go to Settings → System → Hardware
+   - Enable I2C interface
+
+2. **Check available I2C devices:**
+   - Set `debug_mode: true` in the configuration
+   - Check the add-on logs to see what devices are available
+
+3. **Manual I2C port configuration:**
+   - Set `i2c_port` to a specific value (0, 1, etc.) instead of "auto"
+   - Common values: 0 for Raspberry Pi Zero, 1 for Raspberry Pi 3/4
+
+4. **Verify hardware connections:**
+   - Ensure proper wiring (VCC, GND, SCL, SDA)
+   - Check that the display is powered correctly
+
+### Debug Mode
+
+Enable debug mode to test the add-on without an OLED display:
+
+```yaml
+system:
+  debug_mode: true
+```
+
+This will output all metrics to the console/logs instead of trying to use the OLED display.
+
 ## Example Configurations
 
 ### Basic System Monitor
@@ -86,7 +123,28 @@ You can configure multiple metrics to display. Each metric has:
 display:
   type: "sh1106"
   i2c_address: "0x3C"
+  i2c_port: "auto"
 metrics:
   - type: "cpu"
     position: 1
-  -
+  - type: "memory"
+    position: 2
+  - type: "disk"
+    position: 3
+```
+
+### Debug Mode for Testing
+```yaml
+system:
+  debug_mode: true
+  update_interval: 5
+display:
+  i2c_port: "auto"
+metrics:
+  - type: "cpu"
+    position: 1
+  - type: "memory"
+    position: 2
+  - type: "temperature"
+    position: 3
+```
