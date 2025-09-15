@@ -181,8 +181,10 @@ try:
     else:
         device = initialize_display()
         if device is None:
-            print("CRITICAL: Could not initialize OLED display. Exiting.")
-            exit(1)
+            print("WARNING: OLED initialization failed or no I2C device. Falling back to debug mode.")
+            debug_mode = True
+            print("DEBUG MODE: Running without OLED display")
+            device = None
 
     while True:
         # Get temperature for title
