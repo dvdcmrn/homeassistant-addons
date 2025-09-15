@@ -29,7 +29,7 @@ contrast = display_config.get('contrast', 255)
 # System configuration
 system_config = config.get('system', {})
 update_interval = system_config.get('update_interval', 1)
-title = system_config.get('title', 'HEIMDALL')
+title = system_config.get('title', 'home assistant')
 show_title = system_config.get('show_title', True)
 show_temperature = system_config.get('show_temperature', True)
 debug_mode = system_config.get('debug_mode', False)

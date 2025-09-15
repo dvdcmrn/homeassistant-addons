@@ -49,7 +49,7 @@ Make sure I2C is enabled on your Home Assistant device.
 | Option | Description | Default |
 |--------|-------------|---------|
 | `update_interval` | Update interval in seconds | 1 |
-| `title` | Title to display | HEIMDALL |
+| `title` | Title to display | home assistant |
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
 | `debug_mode` | Run in debug mode (console output only) | false |

@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
 description: "Customizable system stats display for OLED screens"
-version: "1.0.1"
+version: "1.0.2"
 slug: "oled_display"
 init: false
 arch:
@@ -26,7 +26,7 @@ options:
     contrast: 255
   system:
     update_interval: 1
-    title: "HEIMDALL"
+    title: "home assistant"
     show_title: true
     show_temperature: true
     debug_mode: false
