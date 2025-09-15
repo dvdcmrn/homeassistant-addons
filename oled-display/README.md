@@ -148,3 +148,7 @@ metrics:
   - type: "temperature"
     position: 3
 ```
+
+## Changelog
+
+See the [CHANGELOG](./CHANGELOG.md) for release notes.
