@@ -65,6 +65,29 @@ Key settings:
 
 If I2C is missing at startup, the add-on now falls back to debug mode and prints metrics in logs until I2C becomes available.
 
+### Enable I2C via Home Assistant Operating System terminal
+
+Alternatively, by attaching a keyboard and screen to your device, you can access the physical terminal to the Home Assistant Operating System.
+
+You can enable I2C via this terminal (from Home Assistant docs):
+
+1. Login as root.
+2. Type `login` and press enter to access the shell.
+3. Type the following to enable I2C, you may need to replace `sda1` with `sdb1` or `mmcblk0p1` depending on your platform:
+
+```
+mkdir /tmp/mnt
+mount /dev/sda1 /tmp/mnt
+mkdir -p /tmp/mnt/modules
+echo -ne i2c-dev>/tmp/mnt/modules/rpi-i2c.conf
+echo dtparam=i2c_vc=on >> /tmp/mnt/config.txt
+echo dtparam=i2c_arm=on >> /tmp/mnt/config.txt
+sync
+reboot
+```
+
+Source: Home Assistant OS Common Tasks (`https://www.home-assistant.io/common-tasks/os/`).
+
 ### Debug mode
 
 Set `debug_mode: true` to run without the OLED. This is automatic if initialization fails.
