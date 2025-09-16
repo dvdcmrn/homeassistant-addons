@@ -30,6 +30,26 @@ Connect your OLED display to the Raspberry Pi:
 
 Make sure I2C is enabled on your Home Assistant device.
 
+### Optional: Enable I2C automatically (Pi 4 / HA OS)
+
+If you are running Home Assistant OS on a Raspberry Pi and I2C is not enabled, you can let the add-on attempt to enable I2C using steps adapted from the HassOSConfigurator project.
+
+1. Edit the add-on configuration and set:
+
+```yaml
+system:
+  enable_i2c: true
+```
+
+2. Start the add-on. It will try to:
+   - Ensure `dtparam=i2c_arm=on` and `dtparam=i2c1=on` exist in `/mnt/boot/config.txt`
+   - Load `i2c-dev` and `i2c-bcm2835` if possible
+
+Notes:
+- This may require a reboot of the host to take full effect.
+- On some systems, the add-on may not have permission to write `/mnt/boot/config.txt`. In that case, enable I2C via Settings → System → Hardware or follow the HassOSConfigurator steps manually.
+- This feature is off by default.
+
 ## Configuration
 
 ### Display Options

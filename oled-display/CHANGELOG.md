@@ -14,5 +14,10 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 ## 1.2.1 - 2025-09-15
 - Version bump only; no functional changes
 
+## 1.3.0 - 2025-09-15
+- Add optional I2C enablement (Pi 4 / HA OS) via `system.enable_i2c`
+- New script `enable_i2c.sh` and integration at service startup
+- Documentation updates with safety notes
+
 ## 1.0.0
 - Initial public release

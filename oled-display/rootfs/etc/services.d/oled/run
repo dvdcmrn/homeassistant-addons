@@ -1,4 +1,13 @@
 #!/usr/bin/with-contenv bashio
 
 bashio::log.info "Starting OLED display service..."
+
+# Optionally enable I2C before starting if requested
+if bashio::config.true 'system.enable_i2c'; then
+  bashio::log.info "system.enable_i2c=true → attempting to enable I2C"
+  /usr/bin/enable_i2c.sh || bashio::log.warning "I2C enablement script encountered issues; continuing"
+else
+  bashio::log.info "system.enable_i2c not set; skipping I2C enablement"
+fi
+
 python3 /usr/bin/oled_monitor.py
