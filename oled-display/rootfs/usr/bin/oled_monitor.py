@@ -16,40 +16,68 @@ import glob
 with open('/data/options.json') as f:
     config = json.load(f)
 
-# Display configuration
+# Support both new flat options and legacy nested options
 display_config = config.get('display', {})
-display_type = display_config.get('type', 'sh1106')
-i2c_address = int(display_config.get('i2c_address', '0x3C'), 16)
-i2c_port = display_config.get('i2c_port', 'auto')
-width = display_config.get('width', 128)
-height = display_config.get('height', 64)
-rotate = display_config.get('rotate', 0)
-contrast = display_config.get('contrast', 255)
+system_config = config.get('system', {})
+custom_text_config = config.get('custom_text', {})
+network_config = config.get('network', {})
+
+# Display configuration (flat first, then legacy fallback)
+display_type = config.get('display_type', display_config.get('type', 'sh1106'))
+i2c_address_str = config.get('i2c_address', display_config.get('i2c_address', '0x3C'))
+i2c_address = int(i2c_address_str, 16) if isinstance(i2c_address_str, str) else int(i2c_address_str)
+i2c_port = config.get('i2c_port', display_config.get('i2c_port', 'auto'))
+width = config.get('width', display_config.get('width', 128))
+height = config.get('height', display_config.get('height', 64))
+rotate = config.get('rotate', display_config.get('rotate', 0))
+contrast = config.get('contrast', display_config.get('contrast', 255))
 
 # System configuration
-system_config = config.get('system', {})
-update_interval = system_config.get('update_interval', 1)
-title = system_config.get('title', 'home assistant')
-show_title = system_config.get('show_title', True)
-show_temperature = system_config.get('show_temperature', True)
-debug_mode = system_config.get('debug_mode', False)
+update_interval = config.get('update_interval', system_config.get('update_interval', 1))
+title = config.get('title', system_config.get('title', 'home assistant'))
+show_title = config.get('show_title', system_config.get('show_title', True))
+show_temperature = config.get('show_temperature', system_config.get('show_temperature', True))
+debug_mode = config.get('debug_mode', system_config.get('debug_mode', False))
 
-# Metrics configuration
+# Build metrics from either legacy list or new toggles
 metrics_config = config.get('metrics', [])
-metrics = sorted(metrics_config, key=lambda x: x.get('position', 99))
+if metrics_config:
+    metrics = sorted(metrics_config, key=lambda x: x.get('position', 99))
+else:
+    show_cpu_metric = config.get('show_cpu', True)
+    show_memory_metric = config.get('show_memory', True)
+    show_disk_metric = config.get('show_disk', True)
+    show_temperature_metric = config.get('show_temperature_metric', False)
+    show_uptime_metric = config.get('show_uptime', False)
+    disk_mount_point = config.get('disk_mount_point', '/')
+
+    metrics = []
+    position_counter = 1
+    if show_cpu_metric:
+        metrics.append({"type": "cpu", "position": position_counter, "show_bar": True, "label": "CPU"})
+        position_counter += 1
+    if show_memory_metric:
+        metrics.append({"type": "memory", "position": position_counter, "show_bar": True, "label": "RAM"})
+        position_counter += 1
+    if show_disk_metric:
+        metrics.append({"type": "disk", "position": position_counter, "show_bar": True, "label": "DISK", "mount_point": disk_mount_point})
+        position_counter += 1
+    if show_temperature_metric:
+        metrics.append({"type": "temperature", "position": position_counter, "show_bar": False, "label": "TEMP"})
+        position_counter += 1
+    if show_uptime_metric:
+        metrics.append({"type": "uptime", "position": position_counter, "show_bar": False, "label": "UPTIME"})
 
 # Custom text configuration
-custom_text_config = config.get('custom_text', {})
-custom_text_enabled = custom_text_config.get('enabled', False)
-custom_text_position = custom_text_config.get('position', 4)
-custom_text = custom_text_config.get('text', 'Home Assistant')
+custom_text_enabled = config.get('custom_text_enabled', custom_text_config.get('enabled', False))
+custom_text_position = config.get('custom_text_position', custom_text_config.get('position', 4))
+custom_text = config.get('custom_text', custom_text_config.get('text', 'Home Assistant'))
 
 # Network configuration
-network_config = config.get('network', {})
-show_ip = network_config.get('show_ip', False)
-network_position = network_config.get('position', 5)
-network_interface = network_config.get('interface', 'eth0')
-network_label = network_config.get('label', 'IP')
+show_ip = config.get('show_ip', network_config.get('show_ip', False))
+network_position = config.get('network_position', network_config.get('position', 5))
+network_interface = config.get('network_interface', network_config.get('interface', 'eth0'))
+network_label = config.get('network_label', network_config.get('label', 'IP'))
 
 def find_i2c_device():
     """Find available I2C devices"""

@@ -1,0 +1,83 @@
+name: OLED System Monitor
+description: OLED stats display for Raspberry Pi 5 on Home Assistant OS
+configuration:
+  options:
+    display_type:
+      name: Display type
+      description: Select your OLED controller (most 128x64 are SH1106 or SSD1306).
+    i2c_address:
+      name: I2C address
+      description: Hex address of the display (common is 0x3C).
+    i2c_port:
+      name: I2C bus
+      description: Bus number (use auto on RPi 5, usually 1).
+    width:
+      name: Width
+      description: Display width in pixels (e.g., 128).
+    height:
+      name: Height
+      description: Display height in pixels (e.g., 64).
+    rotate:
+      name: Rotation
+      description: Rotate content if your display is mounted differently (0,1,2,3).
+    contrast:
+      name: Contrast
+      description: Brightness level from 0 (dim) to 255 (bright).
+
+    update_interval:
+      name: Update interval
+      description: Seconds between screen updates.
+    title:
+      name: Title
+      description: Header text shown on the first line.
+    show_title:
+      name: Show title
+      description: Toggle the header line.
+    show_temperature:
+      name: Show CPU temperature next to title
+      description: Show CPU temperature alongside the header.
+    debug_mode:
+      name: Debug mode
+      description: Log metrics to console without using the OLED.
+
+    show_cpu:
+      name: Show CPU metric
+      description: Display CPU usage with a bar.
+    show_memory:
+      name: Show memory metric
+      description: Display memory usage with a bar.
+    show_disk:
+      name: Show disk metric
+      description: Display disk usage with a bar.
+    disk_mount_point:
+      name: Disk mount point
+      description: Mount path for the disk metric (e.g., /).
+    show_temperature_metric:
+      name: Show temperature metric
+      description: Display CPU temperature as a metric line.
+    show_uptime:
+      name: Show uptime metric
+      description: Display system uptime as a metric line.
+
+    custom_text_enabled:
+      name: Show custom text
+      description: Enable a custom text line.
+    custom_text:
+      name: Custom text
+      description: The text to show.
+    custom_text_position:
+      name: Custom text position
+      description: Line position for the custom text.
+
+    show_ip:
+      name: Show IP address
+      description: Display the IP address line.
+    network_interface:
+      name: Network interface
+      description: Interface to use when showing the IP (e.g., eth0).
+    network_label:
+      name: Network label
+      description: Label prefix for the IP line (e.g., IP).
+    network_position:
+      name: Network line position
+      description: Line position for the IP address.

@@ -1,6 +1,6 @@
-# OLED System Monitor Add-on for Home Assistant
+# OLED System Monitor Add-on (Home Assistant OS on Raspberry Pi 5)
 
-This add-on displays system information on an OLED display connected to your Home Assistant device via I2C.
+This add-on displays system information on an OLED display connected to a Raspberry Pi 5 running Home Assistant OS, using the I2C interface.
 
 ## Features
 
@@ -13,140 +13,88 @@ This add-on displays system information on an OLED display connected to your Hom
 - Automatic I2C device detection
 - Debug mode for testing without OLED display
 
-## Installation
+## Installation (Home Assistant OS, Raspberry Pi 5)
 
-1. Add this repository to your Home Assistant instance
-2. Install the "OLED System Monitor" add-on
-3. Configure the add-on with your display settings
-4. Start the add-on
+1. Add the custom repository to Home Assistant:
+   - Settings → Add-ons → Add-on Store → ⋮ → Repositories → Add the repo URL → Add
+2. Install the "OLED System Monitor" add-on from the store.
+3. Enable I2C on the host:
+   - Settings → System → Hardware → All hardware → ⋮ menu → Enable I2C → Reboot host.
+   - After reboot, verify I2C is present: Settings → System → Hardware → look for `/dev/i2c-1`.
+4. Start the add-on.
 
-## Hardware Setup
+## Hardware Setup (RPi 5)
 
-Connect your OLED display to the Raspberry Pi:
+Connect your OLED display to the Raspberry Pi 5 header:
 - VCC → 3.3V
 - GND → Ground
 - SCL → GPIO 3 (SCL)
 - SDA → GPIO 2 (SDA)
 
-Make sure I2C is enabled on your Home Assistant device.
+Ensure I2C is enabled in Home Assistant OS (see Installation step 3).
 
-## Configuration
+## Configuration (single-page)
 
-### Display Options
+The add-on presents simple, descriptive settings. Legacy nested options remain supported for compatibility.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `type` | Display type (ssd1306 or sh1106) | sh1106 |
-| `i2c_address` | I2C address of the display (usually 0x3C) | 0x3C |
-| `i2c_port` | I2C port (auto, 0, 1, etc.) | auto |
-| `width` | Display width in pixels | 128 |
-| `height` | Display height in pixels | 64 |
-| `rotate` | Display rotation (0, 1, 2, 3) | 0 |
-| `contrast` | Display contrast (0-255) | 255 |
+Key settings:
 
-### System Options
+- `display_type` (ssd1306|sh1106): Your OLED controller type. Most 128x64 modules are sh1106 or ssd1306.
+- `i2c_address`: Hex address of your display. Commonly `0x3C`.
+- `i2c_port`: I2C bus number. Use `auto` for RPi 5 (usually `1`).
+- `width`, `height`: Pixel dimensions. Common modules are 128x64.
+- `rotate`: 0,1,2,3 to rotate display if oriented differently.
+- `contrast`: 0–255 brightness level.
+- `update_interval`: Seconds between screen updates.
+- `title`, `show_title`, `show_temperature`: Header line controls.
+- `show_cpu`, `show_memory`, `show_disk`, `show_temperature_metric`, `show_uptime`: Toggle metrics. `disk_mount_point` for disk metric path.
+- `custom_text_enabled`, `custom_text`, `custom_text_position`: Optional custom line.
+- `show_ip`, `network_interface`, `network_label`, `network_position`: IP address line.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `update_interval` | Update interval in seconds | 1 |
-| `title` | Title to display | home assistant |
-| `show_title` | Whether to show the title | true |
-| `show_temperature` | Whether to show temperature with title | true |
-| `debug_mode` | Run in debug mode (console output only) | false |
+## Troubleshooting (HA OS on RPi 5)
 
-### Metrics
+### I2C device not found
 
-You can configure multiple metrics to display. Each metric has:
+1) Ensure I2C is enabled: Settings → System → Hardware → All hardware → ⋮ → Enable I2C → Reboot host.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `type` | Metric type (cpu, memory, disk, temperature, uptime) | - |
-| `position` | Display position (1-10) | - |
-| `show_bar` | Whether to show a bar graph | true |
-| `label` | Custom label for the metric | (metric type) |
-| `mount_point` | Mount point for disk metrics | / |
+2) After reboot, confirm `/dev/i2c-1` is listed under hardware in HA.
 
-### Custom Text
+3) Wiring: VCC→3.3V, GND→GND, SCL→GPIO3 (SCL), SDA→GPIO2 (SDA).
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `enabled` | Whether to show custom text | false |
-| `position` | Display position | 4 |
-| `text` | Text to display | Home Assistant |
+4) Set `i2c_port: "1"` if auto-detection fails.
 
-### Network Options
+If I2C is missing at startup, the add-on now falls back to debug mode and prints metrics in logs until I2C becomes available.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `show_ip` | Whether to show IP address | false |
-| `position` | Display position | 5 |
-| `interface` | Network interface to use | eth0 |
-| `label` | Label for IP address | IP |
+### Debug mode
 
-## Troubleshooting
+Set `debug_mode: true` to run without the OLED. This is automatic if initialization fails.
 
-### I2C Device Not Found
+## Example configurations
 
-If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`, try these steps:
-
-1. **Enable I2C in Home Assistant:**
-   - Go to Settings → System → Hardware
-   - Enable I2C interface
-
-2. **Check available I2C devices:**
-   - Set `debug_mode: true` in the configuration
-   - Check the add-on logs to see what devices are available
-
-3. **Manual I2C port configuration:**
-   - Set `i2c_port` to a specific value (0, 1, etc.) instead of "auto"
-   - Common values: 0 for Raspberry Pi Zero, 1 for Raspberry Pi 3/4
-
-4. **Verify hardware connections:**
-   - Ensure proper wiring (VCC, GND, SCL, SDA)
-   - Check that the display is powered correctly
-
-### Debug Mode
-
-Enable debug mode to test the add-on without an OLED display:
-
+### Minimal (defaults)
 ```yaml
-system:
-  debug_mode: true
+display_type: "sh1106"
+i2c_address: "0x3C"
+i2c_port: "auto"
 ```
 
-This will output all metrics to the console/logs instead of trying to use the OLED display.
-
-## Example Configurations
-
-### Basic System Monitor
+### Customized layout
 ```yaml
-display:
-  type: "sh1106"
-  i2c_address: "0x3C"
-  i2c_port: "auto"
-metrics:
-  - type: "cpu"
-    position: 1
-  - type: "memory"
-    position: 2
-  - type: "disk"
-    position: 3
-```
-
-### Debug Mode for Testing
-```yaml
-system:
-  debug_mode: true
-  update_interval: 5
-display:
-  i2c_port: "auto"
-metrics:
-  - type: "cpu"
-    position: 1
-  - type: "memory"
-    position: 2
-  - type: "temperature"
-    position: 3
+title: "Home Assistant"
+show_title: true
+show_temperature: true
+show_cpu: true
+show_memory: true
+show_disk: true
+disk_mount_point: "/"
+show_temperature_metric: false
+show_uptime: true
+custom_text_enabled: true
+custom_text: "Welcome"
+custom_text_position: 4
+show_ip: true
+network_interface: "eth0"
+network_label: "IP"
 ```
 
 ## Changelog

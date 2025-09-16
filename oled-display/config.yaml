@@ -1,11 +1,10 @@
 name: "OLED System Monitor"
-description: "Customizable system stats display for OLED screens"
-version: "1.0.2"
+description: "OLED stats display for Raspberry Pi 5 on Home Assistant OS"
+version: "1.1.0"
 slug: "oled_display"
 init: false
 arch:
   - aarch64
-  - armhf
   - armv7
 startup: application
 boot: auto
@@ -16,70 +15,68 @@ gpio: true
 privileged:
   - SYS_RAWIO
 options:
-  display:
-    type: "sh1106"
-    i2c_address: "0x3C"
-    i2c_port: "auto"
-    width: 128
-    height: 64
-    rotate: 0
-    contrast: 255
-  system:
-    update_interval: 1
-    title: "home assistant"
-    show_title: true
-    show_temperature: true
-    debug_mode: false
-  metrics:
-    - type: "cpu"
-      position: 1
-      show_bar: true
-      label: "CPU"
-    - type: "memory"
-      position: 2
-      show_bar: true
-      label: "RAM"
-    - type: "disk"
-      position: 3
-      show_bar: true
-      label: "DISK"
-      mount_point: "/"
-  custom_text:
-    enabled: false
-    position: 4
-    text: "Home Assistant"
-  network:
-    show_ip: false
-    position: 5
-    interface: "eth0"
-    label: "IP"
+  # Display
+  display_type: "sh1106"
+  i2c_address: "0x3C"  # Most 128x64 modules use 0x3C
+  i2c_port: "auto"     # Usually 1 on Raspberry Pi 5
+  width: 128
+  height: 64
+  rotate: 0
+  contrast: 255
+
+  # Behavior
+  update_interval: 1
+  title: "Home Assistant"
+  show_title: true
+  show_temperature: true
+  debug_mode: false
+
+  # Metric toggles (simplified)
+  show_cpu: true
+  show_memory: true
+  show_disk: true
+  disk_mount_point: "/"
+  show_temperature_metric: false
+  show_uptime: false
+
+  # Custom text
+  custom_text_enabled: false
+  custom_text_position: 4
+  custom_text: "Home Assistant"
+
+  # Network label
+  show_ip: false
+  network_position: 5
+  network_interface: "eth0"
+  network_label: "IP"
+
 schema:
-  display:
-    type: list(ssd1306|sh1106)
-    i2c_address: str
-    i2c_port: str
-    width: int
-    height: int
-    rotate: list(0|1|2|3)
-    contrast: int(0,255)
-  system:
-    update_interval: int(1,60)
-    title: str
-    show_title: bool
-    show_temperature: bool
-    debug_mode: bool
-  metrics:
-    - type: list(cpu|memory|disk|temperature|uptime)
-      position: int(1,10)
-      show_bar: bool
-      label: str
-      mount_point: str?
-  custom_text:
-    enabled: bool
-    position: int(1,10)
-    text: str
-  network:
-    show_ip: bool
-    position: int(1,10)
-    interface: str
-    label: str
+  display_type: list(ssd1306|sh1106)
+  i2c_address: str
+  i2c_port: str
+  width: int
+  height: int
+  rotate: list(0|1|2|3)
+  contrast: int(0,255)
+
+  update_interval: int(1,60)
+  title: str
+  show_title: bool
+  show_temperature: bool
+  debug_mode: bool
+
+  show_cpu: bool
+  show_memory: bool
+  show_disk: bool
+  disk_mount_point: str
+  show_temperature_metric: bool
+  show_uptime: bool
+
+  custom_text_enabled: bool
+  custom_text_position: int(1,10)
+  custom_text: str
+
+  show_ip: bool
+  network_position: int(1,10)
+  network_interface: str
+  network_label: str
