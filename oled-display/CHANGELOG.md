@@ -18,5 +18,8 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - Slim Docker image dependencies for HA OS base
 - Update README for HA OS on RPi 5 only
 
+### Internal
+- Migrate base image to `ghcr.io/home-assistant/aarch64-addon-base:3.18`
+
 ## 1.0.0
 - Initial public release
