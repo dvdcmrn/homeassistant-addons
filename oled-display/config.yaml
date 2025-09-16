@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
 description: "Customizable system stats display for OLED screens"
-version: "1.0.2"
+version: "1.2.1"
 slug: "oled_display"
 init: false
 arch:

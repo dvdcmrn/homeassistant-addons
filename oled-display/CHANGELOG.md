@@ -11,5 +11,8 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - Change default system title to "home assistant"
 - Update README default value table
 
+## 1.2.1 - 2025-09-15
+- Version bump only; no functional changes
+
 ## 1.0.0
 - Initial public release
