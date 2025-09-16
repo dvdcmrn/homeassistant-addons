@@ -1,16 +1,14 @@
 name: "OLED System Monitor"
 description: "OLED stats display for Raspberry Pi 5 on Home Assistant OS"
-version: "1.1.0"
+version: "1.2.0"
 slug: "oled_display"
 init: false
 arch:
   - aarch64
-  - armv7
 startup: application
 boot: auto
 devices:
   - /dev/i2c-1
-  - /dev/i2c-0
 gpio: true
 privileged:
   - SYS_RAWIO

@@ -11,5 +11,12 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - Change default system title to "home assistant"
 - Update README default value table
 
+## 1.2.0 - 2025-09-15
+- Limit add-on to Raspberry Pi 5 (aarch64) on Home Assistant OS
+- Flatten configuration to single-page options with labels/descriptions
+- Add automatic debug-mode fallback when I2C/OLED init fails
+- Slim Docker image dependencies for HA OS base
+- Update README for HA OS on RPi 5 only
+
 ## 1.0.0
 - Initial public release

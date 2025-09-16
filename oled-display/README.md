@@ -1,6 +1,6 @@
 # OLED System Monitor Add-on (Home Assistant OS on Raspberry Pi 5)
 
-This add-on displays system information on an OLED display connected to a Raspberry Pi 5 running Home Assistant OS, using the I2C interface.
+This add-on displays system information on an OLED display connected to a Raspberry Pi 5 running Home Assistant OS, using the I2C interface. It targets RPi 5 (aarch64) exclusively.
 
 ## Features
 
@@ -13,7 +13,7 @@ This add-on displays system information on an OLED display connected to a Raspbe
 - Automatic I2C device detection
 - Debug mode for testing without OLED display
 
-## Installation (Home Assistant OS, Raspberry Pi 5)
+## Installation (Home Assistant OS, Raspberry Pi 5 only)
 
 1. Add the custom repository to Home Assistant:
    - Settings → Add-ons → Add-on Store → ⋮ → Repositories → Add the repo URL → Add
@@ -21,7 +21,7 @@ This add-on displays system information on an OLED display connected to a Raspbe
 3. Enable I2C on the host:
    - Settings → System → Hardware → All hardware → ⋮ menu → Enable I2C → Reboot host.
    - After reboot, verify I2C is present: Settings → System → Hardware → look for `/dev/i2c-1`.
-4. Start the add-on.
+4. Start the add-on. If I2C is not yet present, the add-on will log metrics in debug mode until `/dev/i2c-1` is exposed by HA OS.
 
 ## Hardware Setup (RPi 5)
 
