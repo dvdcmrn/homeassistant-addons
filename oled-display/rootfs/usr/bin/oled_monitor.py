@@ -52,16 +52,15 @@ network_interface = network_config.get('interface', 'eth0')
 network_label = network_config.get('label', 'IP')
 
 def find_i2c_device():
-    """Find available I2C devices"""
-    i2c_devices = glob.glob('/dev/i2c-*')
-    if not i2c_devices:
-        # Try alternative paths
-        i2c_devices = glob.glob('/dev/i2c*')
-    
+    """Find available I2C devices, prefer bus 1, then lowest bus number."""
+    preferred = '/dev/i2c-1'
+    if os.path.exists(preferred):
+        return preferred.split('-')[-1]
+
+    i2c_devices = sorted(glob.glob('/dev/i2c-*'))
     if i2c_devices:
-        # Sort to prefer i2c-1, then i2c-0, etc.
-        i2c_devices.sort()
-        return i2c_devices[0].split('-')[-1]  # Extract port number
+        # Return the lowest-numbered bus
+        return i2c_devices[0].split('-')[-1]
     return None
 
 def initialize_display():

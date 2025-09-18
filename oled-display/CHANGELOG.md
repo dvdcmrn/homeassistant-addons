@@ -19,5 +19,9 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - New script `enable_i2c.sh` and integration at service startup
 - Documentation updates with safety notes
 
+## 1.3.1 - 2025-09-15
+- Skip I2C enablement if /dev/i2c-* devices already exist
+- Prefer bus 1 during auto-detection
+
 ## 1.0.0
 - Initial public release
