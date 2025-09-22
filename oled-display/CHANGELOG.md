@@ -2,6 +2,13 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.3 - 2025-01-27
+- Add comprehensive I2C diagnostics and troubleshooting
+- Enhanced error reporting with detailed exception information
+- Automatic I2C bus scanning when display initialization fails
+- Improved troubleshooting documentation and tips
+- Better hardware connection verification guidance
+
 ## 1.0.1 - 2025-09-15
 - Bump add-on version so Home Assistant surfaces the update
 - Add changelog and link from README

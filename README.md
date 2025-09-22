@@ -23,7 +23,7 @@ Display system information on an OLED display connected to your Home Assistant d
 - Automatic I2C device detection
 - Debug mode for testing without OLED display
 
-**Latest Version**: 1.3.2
+**Latest Version**: 1.3.3
 
 **Installation:**
 1. Add this repository to your Home Assistant instance

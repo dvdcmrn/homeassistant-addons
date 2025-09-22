@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
 description: "Customizable system stats display for OLED screens"
-version: "1.3.2"
+version: "1.3.3"
 slug: "oled_display"
 panel_icon: "mdi:monitor-dashboard"
 init: false
