@@ -30,9 +30,9 @@ Connect your OLED display to the Raspberry Pi:
 
 Make sure I2C is enabled on your Home Assistant device.
 
-### Optional: Enable I2C automatically (Pi 4 / HA OS)
+### Optional: Enable I2C automatically (Pi 4/5 / HA OS)
 
-If you are running Home Assistant OS on a Raspberry Pi and I2C is not enabled, you can let the add-on attempt to enable I2C using steps adapted from the HassOSConfigurator project.
+If you are running Home Assistant OS on a Raspberry Pi (Pi 4 or Pi 5) and I2C is not enabled, you can let the add-on attempt to enable I2C using enhanced functionality based on the [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) project by [adamoutler](https://github.com/adamoutler).
 
 1. Edit the add-on configuration and set:
 
@@ -41,14 +41,29 @@ system:
   enable_i2c: true
 ```
 
-2. Start the add-on. It will try to:
-   - Ensure `dtparam=i2c_arm=on` and `dtparam=i2c1=on` exist in `/mnt/boot/config.txt`
-   - Load `i2c-dev` and `i2c-bcm2835` if possible
+2. Start the add-on. It will perform comprehensive I2C enablement:
+   - Scan for boot partitions (sda1, sdb1, mmcblk0p1, nvme0n1p1)
+   - Add `dtparam=i2c_vc=on` and `dtparam=i2c_arm=on` to config.txt
+   - Set up kernel module loading for both HASSOS and Raspbian
+   - Load `i2c-dev` and `i2c-bcm2835` modules if possible
 
-Notes:
-- This may require a reboot of the host to take full effect.
-- On some systems, the add-on may not have permission to write `/mnt/boot/config.txt`. In that case, enable I2C via Settings → System → Hardware or follow the HassOSConfigurator steps manually.
-- This feature is off by default.
+**Important Notes:**
+- This may require up to **3 hard power-off reboots** (not just restarts) to take full effect
+- **Why Multiple Reboots Are Needed:**
+  1. **First Reboot**: Places I2C configuration files in the boot partition
+  2. **Second Reboot**: Activates I2C hardware and loads kernel modules
+  3. **Third Reboot** (sometimes needed): Ensures all I2C devices are properly initialized
+- On some systems, protection mode must be disabled in Settings → System → Hardware
+- This feature is off by default
+- Check add-on logs after each reboot to see progress
+
+**What to Expect During Each Restart:**
+- **After 1st Restart**: Add-on will show "I2C devices already available" or continue with configuration
+- **After 2nd Restart**: I2C hardware should be enabled, but device nodes may not be fully created yet
+- **After 3rd Restart**: All I2C devices should be available at `/dev/i2c-*` and the OLED display should work
+
+**Standalone I2C Enablement:**
+If you need to enable I2C outside of the OLED add-on, you can use the standalone script in the [Pi5-I2C directory](../../Pi5-I2C/) which contains the complete implementation.
 
 ## Configuration
 

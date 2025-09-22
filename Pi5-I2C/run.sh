@@ -1,39 +1,39 @@
 #!/usr/bin/with-contenv bash
 
-# Enhanced I2C enablement script for OLED System Monitor add-on
+# Pi5-I2C - Enhanced I2C enablement for Raspberry Pi (Pi 4/5) on Home Assistant OS
 # Based on HassOSConfigurator by adamoutler: https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C
-# Supports Raspberry Pi 4 and Pi 5 devices
+# Integrated into OLED System Monitor add-on
 
 set -euo pipefail
 
 log_info() {
-    echo "[I2C] $*"
+    echo "[Pi5-I2C] $*"
 }
 
 log_warn() {
-    echo "[I2C][WARN] $*"
+    echo "[Pi5-I2C][WARN] $*"
 }
 
 log_error() {
-    echo "[I2C][ERROR] $*"
+    echo "[Pi5-I2C][ERROR] $*"
 }
 
-# I2C configuration parameters (based on HassOSConfigurator)
+# I2C configuration parameters
 I2C_VC_CONFIG='dtparam=i2c_vc=on'
 I2C_ARM_CONFIG='dtparam=i2c_arm=on'
 
-log_info "Starting enhanced I2C enablement for Raspberry Pi (Pi 4/5)"
+log_info "Starting enhanced I2C enablement process for Raspberry Pi (Pi 4/5)"
 log_info "Based on HassOSConfigurator implementation by adamoutler"
 log_info "This process may require up to 3 reboots for full I2C enablement"
 
 # Check if I2C is already available
 if ls /dev/i2c-* >/dev/null 2>&1; then
     log_info "I2C devices already available: $(ls /dev/i2c-* | xargs)"
-    log_info "I2C is already enabled! No further action needed."
+    log_info "I2C is already enabled! You can disable this add-on if no longer needed."
     exit 0
 fi
 
-log_info "I2C not detected, attempting comprehensive enablement..."
+log_info "I2C not detected, attempting to enable..."
 
 # Function to perform I2C configuration on a partition
 performWork() {
@@ -118,7 +118,7 @@ mkdir -p /tmp 2>/dev/null || true
 # Check available partitions and attempt I2C configuration
 log_info "Scanning for boot partitions..."
 
-# Try common partition names (based on HassOSConfigurator)
+# Try common partition names
 for partition in sda1 sdb1 mmcblk0p1 nvme0n1p1; do
     if [ -e "/dev/$partition" ]; then
         log_info "Found partition: $partition"
@@ -133,15 +133,7 @@ if [ ! -e "/dev/sda1" ] && [ ! -e "/dev/sdb1" ] && [ ! -e "/dev/mmcblk0p1" ] && 
     exit 1
 fi
 
-# Try to load kernel modules in the running system (may fail on HA OS sandbox)
-if command -v modprobe >/dev/null 2>&1; then
-    modprobe i2c-dev 2>/dev/null || log_warn "Could not load i2c-dev (may require reboot or elevated privileges)"
-    modprobe i2c-bcm2835 2>/dev/null || log_warn "Could not load i2c-bcm2835 (may require reboot or elevated privileges)"
-else
-    log_warn "modprobe not available in container"
-fi
-
-log_info "Enhanced I2C enablement completed"
+log_info "I2C configuration completed"
 log_warn "IMPORTANT: You need to perform a hard power-off reboot now"
 log_warn "You may need to reboot up to 3 times total:"
 log_warn "  1. First reboot: Places configuration files in boot partition"
@@ -150,10 +142,4 @@ log_warn "  3. Third reboot (if needed): Ensures all I2C devices are properly in
 log_warn "After final reboot, I2C devices should be available at /dev/i2c-*"
 log_warn "Check add-on logs after each reboot to see progress"
 
-# Show available I2C devices for visibility
-if ls /dev/i2c-* >/dev/null 2>&1; then
-    log_info "Available I2C devices: $(ls /dev/i2c-* | xargs)"
-else
-    log_warn "No /dev/i2c-* devices visible yet. A system reboot is required."
-fi
-
+exit 0

@@ -23,5 +23,14 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - Skip I2C enablement if /dev/i2c-* devices already exist
 - Prefer bus 1 during auto-detection
 
+## 1.3.2 - 2025-01-27
+- **Enhanced I2C enablement** based on [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) by adamoutler
+- Comprehensive boot partition scanning (sda1, sdb1, mmcblk0p1, nvme0n1p1)
+- Support for both `dtparam=i2c_vc=on` and `dtparam=i2c_arm=on` configuration
+- Enhanced Raspbian support with i2c-bcm2708 module loading
+- Improved error handling and protection mode detection
+- Added standalone [Pi4EnableI2C directory](../../Pi4EnableI2C/) for manual I2C setup
+- Updated documentation with proper attribution and detailed instructions
+
 ## 1.0.0
 - Initial public release
