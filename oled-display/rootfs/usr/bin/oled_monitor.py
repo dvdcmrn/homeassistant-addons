@@ -63,6 +63,27 @@ def find_i2c_device():
         return i2c_devices[0].split('-')[-1]
     return None
 
+def scan_all_i2c_buses():
+    """Scan all available I2C buses for devices."""
+    print("Scanning all available I2C buses for devices...")
+    i2c_devices = sorted(glob.glob('/dev/i2c-*'))
+    
+    if not i2c_devices:
+        print("No I2C devices found!")
+        return
+    
+    for device in i2c_devices:
+        bus_num = device.split('-')[-1]
+        print(f"\nScanning I2C bus {bus_num} ({device}):")
+        try:
+            result = subprocess.run(['i2cdetect', '-y', bus_num], capture_output=True, text=True)
+            if result.returncode == 0:
+                print(result.stdout)
+            else:
+                print(f"Error scanning bus {bus_num}: {result.stderr}")
+        except Exception as e:
+            print(f"Could not scan bus {bus_num}: {e}")
+
 def initialize_display():
     """Initialize the OLED display with error handling"""
     # Use configured port or auto-detect
@@ -83,6 +104,20 @@ def initialize_display():
     
     try:
         print(f"Using I2C device: /dev/i2c-{port_num}")
+        print(f"Attempting to connect to address: 0x{i2c_address:02X}")
+        
+        # First, let's scan for devices on this I2C bus
+        try:
+            import subprocess
+            result = subprocess.run(['i2cdetect', '-y', str(port_num)], capture_output=True, text=True)
+            if result.returncode == 0:
+                print(f"I2C bus {port_num} scan results:")
+                print(result.stdout)
+            else:
+                print(f"Could not scan I2C bus {port_num}: {result.stderr}")
+        except Exception as scan_error:
+            print(f"Could not run i2cdetect: {scan_error}")
+        
         serial = i2c(port=int(port_num), address=i2c_address)
         
         if display_type == 'sh1106':
@@ -97,7 +132,19 @@ def initialize_display():
         
     except Exception as e:
         print(f"ERROR: Failed to initialize display: {e}")
+        print(f"Exception type: {type(e).__name__}")
         print(f"Tried I2C port: {port_num}, address: 0x{i2c_address:02X}")
+        print(f"Display type: {display_type}")
+        print(f"Display dimensions: {width}x{height}")
+        
+        # Additional debugging info
+        try:
+            import subprocess
+            result = subprocess.run(['ls', '-la', f'/dev/i2c-{port_num}'], capture_output=True, text=True)
+            print(f"I2C device permissions: {result.stdout}")
+        except:
+            pass
+            
         return None
 
 # Load a font
@@ -181,6 +228,18 @@ try:
         device = initialize_display()
         if device is None:
             print("CRITICAL: Could not initialize OLED display. Exiting.")
+            print("\n=== I2C DIAGNOSTICS ===")
+            scan_all_i2c_buses()
+            print("\n=== TROUBLESHOOTING TIPS ===")
+            print("1. Check your OLED display connections:")
+            print("   - VCC → 3.3V")
+            print("   - GND → Ground") 
+            print("   - SCL → GPIO 3 (SCL)")
+            print("   - SDA → GPIO 2 (SDA)")
+            print("2. Verify your display type (ssd1306 or sh1106)")
+            print("3. Check if the I2C address is correct (usually 0x3C)")
+            print("4. Try different I2C ports (0, 1, etc.)")
+            print("5. Ensure your display is powered and working")
             exit(1)
 
     while True:

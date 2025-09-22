@@ -140,6 +140,30 @@ If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`
    - Ensure proper wiring (VCC, GND, SCL, SDA)
    - Check that the display is powered correctly
 
+### OLED Display Initialization Failed
+
+If you see "ERROR: Failed to initialize display" but I2C devices are present:
+
+1. **Check I2C device detection:**
+   - The add-on will now automatically scan all I2C buses when initialization fails
+   - Look for your display's I2C address (usually 0x3C) in the scan results
+
+2. **Verify display type:**
+   - Make sure you've selected the correct display type (ssd1306 or sh1106)
+   - Most common displays are SH1106
+
+3. **Check I2C address:**
+   - Default is 0x3C, but some displays use 0x3D
+   - Try both addresses if unsure
+
+4. **Hardware troubleshooting:**
+   - Ensure proper power supply (3.3V, not 5V)
+   - Check for loose connections
+   - Try a different I2C port (0, 1, etc.)
+
+5. **Enable debug mode:**
+   - Set `debug_mode: true` to run without the display and see system metrics
+
 ### Debug Mode
 
 Enable debug mode to test the add-on without an OLED display:
