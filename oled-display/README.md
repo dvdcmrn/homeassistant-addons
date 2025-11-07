@@ -83,7 +83,7 @@ If you need to enable I2C outside of the OLED add-on, you can use the standalone
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `update_interval` | Update interval in seconds | 1 |
+| `update_interval` | Update interval in seconds (recommend 5+ to minimize I2C/USB interference) | 1 |
 | `title` | Title to display | home assistant |
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
@@ -133,8 +133,12 @@ If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`
    - Check the add-on logs to see what devices are available
 
 3. **Manual I2C port configuration:**
-   - Set `i2c_port` to a specific value (0, 1, etc.) instead of "auto"
-   - Common values: 0 for Raspberry Pi Zero, 1 for Raspberry Pi 3/4
+   - Set `i2c_port` to a specific value instead of "auto"
+   - Common values:
+     - Raspberry Pi Zero: 0
+     - Raspberry Pi 3/4: 1
+     - Raspberry Pi 5 (GPIO I2C): 13 or 14 (try 13 first, then 14, then 1)
+   - **Note for Pi 5**: Buses 0 and 1 are virtual adapters and may not work for hardware GPIO I2C. Use bus 13 or 14 for GPIO 2/3 connections.
 
 4. **Verify hardware connections:**
    - Ensure proper wiring (VCC, GND, SCL, SDA)
@@ -159,7 +163,8 @@ If you see "ERROR: Failed to initialize display" but I2C devices are present:
 4. **Hardware troubleshooting:**
    - Ensure proper power supply (3.3V, not 5V)
    - Check for loose connections
-   - Try a different I2C port (0, 1, etc.)
+   - Try a different I2C port (0, 1, 13, 14, etc.)
+   - For Pi 5: Start with bus 13, then try 14, then 1
 
 5. **Enable debug mode:**
    - Set `debug_mode: true` to run without the display and see system metrics

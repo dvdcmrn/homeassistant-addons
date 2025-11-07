@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
 description: "Customizable system stats display for OLED screens"
-version: "1.3.3"
+version: "1.3.4"
 slug: "oled_display"
 panel_icon: "mdi:monitor-dashboard"
 init: false
@@ -20,13 +20,13 @@ options:
   display:
     type: "sh1106"
     i2c_address: "0x3C"
-    i2c_port: "auto"
+    i2c_port: "13"
     width: 128
     height: 64
     rotate: 0
     contrast: 255
   system:
-    update_interval: 1
+    update_interval: 5
     title: "home assistant"
     show_title: true
     show_temperature: true
