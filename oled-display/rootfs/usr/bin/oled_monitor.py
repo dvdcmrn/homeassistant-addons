@@ -121,22 +121,48 @@ def initialize_display():
         serial = i2c(port=int(port_num), address=i2c_address)
         
         # Try to initialize display with better error handling
+        # Try both display types and addresses if needed
+        device = None
+        last_error = None
+        
+        # First try configured type
         try:
             if display_type == 'sh1106':
                 device = sh1106(serial, width=width, height=height, rotate=rotate)
             else:
                 device = ssd1306(serial, width=width, height=height, rotate=rotate)
+            print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X}")
         except AssertionError as e:
-            # AssertionError usually means device doesn't respond correctly
-            # Try alternative display type or address
-            print(f"AssertionError initializing {display_type} at 0x{i2c_address:02X}")
-            print(f"Trying alternative: ssd1306 instead of {display_type}...")
+            last_error = e
+            print(f"AssertionError initializing {display_type} at 0x{i2c_address:02X}: {e}")
+            # Try alternative display type
+            print(f"Trying alternative display type...")
             try:
-                device = ssd1306(serial, width=width, height=height, rotate=rotate)
-                print("Successfully initialized as ssd1306 instead of sh1106")
+                if display_type == 'sh1106':
+                    alt_type = 'ssd1306'
+                    device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                else:
+                    alt_type = 'sh1106'
+                    device = sh1106(serial, width=width, height=height, rotate=rotate)
+                print(f"Successfully initialized as {alt_type} instead of {display_type}")
             except Exception as alt_e:
-                print(f"Alternative also failed: {alt_e}")
-                raise e  # Re-raise original error
+                print(f"Alternative display type also failed: {alt_e}")
+                # Try alternative I2C address
+                alt_address = 0x3D if i2c_address == 0x3C else 0x3C
+                print(f"Trying alternative I2C address 0x{alt_address:02X}...")
+                try:
+                    serial_alt = i2c(port=int(port_num), address=alt_address)
+                    if display_type == 'sh1106':
+                        device = sh1106(serial_alt, width=width, height=height, rotate=rotate)
+                    else:
+                        device = ssd1306(serial_alt, width=width, height=height, rotate=rotate)
+                    print(f"Successfully initialized at alternative address 0x{alt_address:02X}")
+                except Exception as addr_e:
+                    print(f"Alternative address also failed: {addr_e}")
+                    raise e  # Re-raise original error
+        
+        if device is None:
+            raise last_error if last_error else Exception("Failed to initialize display")
         
         # Set contrast
         device.contrast(contrast)
