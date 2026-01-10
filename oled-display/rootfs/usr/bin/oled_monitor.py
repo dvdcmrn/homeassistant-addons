@@ -118,51 +118,55 @@ def initialize_display():
         except Exception as scan_error:
             print(f"Could not run i2cdetect: {scan_error}")
         
+        # Create I2C connection - match working example: simple int conversion
         serial = i2c(port=int(port_num), address=i2c_address)
         
-        # Try to initialize display with better error handling
-        # Try both display types and addresses if needed
+        # Initialize display - match working example: simple initialization without rotate initially
+        # Try with rotate parameter first, then without if it fails
         device = None
-        last_error = None
-        
-        # First try configured type
         try:
             if display_type == 'sh1106':
-                device = sh1106(serial, width=width, height=height, rotate=rotate)
+                # Try with rotate parameter first (if rotate is 0, it should work fine)
+                device = sh1106(serial, width=width, height=height, rotate=rotate if rotate else 0)
             else:
-                device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                device = ssd1306(serial, width=width, height=height, rotate=rotate if rotate else 0)
             print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X}")
-        except AssertionError as e:
-            last_error = e
-            print(f"AssertionError initializing {display_type} at 0x{i2c_address:02X}: {e}")
-            # Try alternative display type
-            print(f"Trying alternative display type...")
+        except (AssertionError, Exception) as e:
+            print(f"Failed to initialize {display_type} at 0x{i2c_address:02X}: {type(e).__name__}: {e}")
+            # Try without rotate parameter (match working example)
+            print(f"Trying without rotate parameter...")
             try:
                 if display_type == 'sh1106':
-                    alt_type = 'ssd1306'
-                    device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                    device = sh1106(serial, width=width, height=height)
                 else:
-                    alt_type = 'sh1106'
-                    device = sh1106(serial, width=width, height=height, rotate=rotate)
-                print(f"Successfully initialized as {alt_type} instead of {display_type}")
-            except Exception as alt_e:
-                print(f"Alternative display type also failed: {alt_e}")
-                # Try alternative I2C address
-                alt_address = 0x3D if i2c_address == 0x3C else 0x3C
-                print(f"Trying alternative I2C address 0x{alt_address:02X}...")
+                    device = ssd1306(serial, width=width, height=height)
+                print(f"Successfully initialized {display_type} without rotate parameter")
+            except Exception as e2:
+                print(f"Without rotate also failed: {type(e2).__name__}: {e2}")
+                # Try alternative display type
+                print(f"Trying alternative display type...")
                 try:
-                    serial_alt = i2c(port=int(port_num), address=alt_address)
                     if display_type == 'sh1106':
-                        device = sh1106(serial_alt, width=width, height=height, rotate=rotate)
+                        device = ssd1306(serial, width=width, height=height)
+                        print("Successfully initialized as ssd1306 instead of sh1106")
                     else:
-                        device = ssd1306(serial_alt, width=width, height=height, rotate=rotate)
-                    print(f"Successfully initialized at alternative address 0x{alt_address:02X}")
-                except Exception as addr_e:
-                    print(f"Alternative address also failed: {addr_e}")
-                    raise e  # Re-raise original error
+                        device = sh1106(serial, width=width, height=height)
+                        print("Successfully initialized as sh1106 instead of ssd1306")
+                except Exception as e3:
+                    print(f"Alternative display type also failed: {type(e3).__name__}: {e3}")
+                    # Last resort: try alternative I2C address
+                    alt_address = 0x3D if i2c_address == 0x3C else 0x3C
+                    print(f"Trying alternative I2C address 0x{alt_address:02X}...")
+                    try:
+                        serial_alt = i2c(port=int(port_num), address=alt_address)
+                        device = sh1106(serial_alt, width=width, height=height)
+                        print(f"Successfully initialized sh1106 at alternative address 0x{alt_address:02X}")
+                    except Exception as e4:
+                        print(f"Alternative address also failed: {type(e4).__name__}: {e4}")
+                        raise e  # Re-raise original error
         
         if device is None:
-            raise last_error if last_error else Exception("Failed to initialize display")
+            raise Exception("Failed to initialize display with all methods attempted")
         
         # Set contrast
         device.contrast(contrast)
