@@ -123,30 +123,41 @@ def initialize_display():
         
         # Initialize display - match working example: simple initialization
         # Working example uses: sh1106(serial, width=128, height=64) - no rotate parameter
+        # But we support rotate from config, so use it if specified
         device = None
         last_error = None
         
-        # First try exactly like working example: without rotate parameter
+        # If rotate is 0, try without rotate parameter first (like working example)
+        # If rotate is non-zero, use it from the start
         try:
-            if display_type == 'sh1106':
-                device = sh1106(serial, width=width, height=height)
+            if rotate != 0:
+                # User wants rotation, use it from the start
+                if display_type == 'sh1106':
+                    device = sh1106(serial, width=width, height=height, rotate=rotate)
+                else:
+                    device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X} with rotate={rotate}")
             else:
-                device = ssd1306(serial, width=width, height=height)
-            print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X} (no rotate)")
+                # No rotation needed, match working example exactly
+                if display_type == 'sh1106':
+                    device = sh1106(serial, width=width, height=height)
+                else:
+                    device = ssd1306(serial, width=width, height=height)
+                print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X} (no rotate)")
         except Exception as e:
             last_error = e
-            print(f"Failed to initialize {display_type} without rotate: {type(e).__name__}: {e}")
-            # Try with rotate parameter if it was specified
+            print(f"Failed to initialize {display_type}: {type(e).__name__}: {e}")
+            # If we tried with rotate and failed, try without rotate
             if rotate != 0:
-                print(f"Trying with rotate parameter ({rotate})...")
+                print(f"Trying without rotate parameter...")
                 try:
                     if display_type == 'sh1106':
-                        device = sh1106(serial, width=width, height=height, rotate=rotate)
+                        device = sh1106(serial, width=width, height=height)
                     else:
-                        device = ssd1306(serial, width=width, height=height, rotate=rotate)
-                    print(f"Successfully initialized {display_type} with rotate={rotate}")
+                        device = ssd1306(serial, width=width, height=height)
+                    print(f"Successfully initialized {display_type} without rotate")
                 except Exception as e2:
-                    print(f"With rotate also failed: {type(e2).__name__}: {e2}")
+                    print(f"Without rotate also failed: {type(e2).__name__}: {e2}")
                     last_error = e2
             
             # If still failed, try alternative display type (without rotate)
