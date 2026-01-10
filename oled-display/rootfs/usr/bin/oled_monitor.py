@@ -120,10 +120,23 @@ def initialize_display():
         
         serial = i2c(port=int(port_num), address=i2c_address)
         
-        if display_type == 'sh1106':
-            device = sh1106(serial, width=width, height=height, rotate=rotate)
-        else:
-            device = ssd1306(serial, width=width, height=height, rotate=rotate)
+        # Try to initialize display with better error handling
+        try:
+            if display_type == 'sh1106':
+                device = sh1106(serial, width=width, height=height, rotate=rotate)
+            else:
+                device = ssd1306(serial, width=width, height=height, rotate=rotate)
+        except AssertionError as e:
+            # AssertionError usually means device doesn't respond correctly
+            # Try alternative display type or address
+            print(f"AssertionError initializing {display_type} at 0x{i2c_address:02X}")
+            print(f"Trying alternative: ssd1306 instead of {display_type}...")
+            try:
+                device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                print("Successfully initialized as ssd1306 instead of sh1106")
+            except Exception as alt_e:
+                print(f"Alternative also failed: {alt_e}")
+                raise e  # Re-raise original error
         
         # Set contrast
         device.contrast(contrast)
