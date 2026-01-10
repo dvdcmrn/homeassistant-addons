@@ -2,6 +2,10 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.5 - 2025-01-27
+- Add I2C devices /dev/i2c-13 and /dev/i2c-14 to devices list for Pi 5 GPIO I2C support
+- Fix permission issues when accessing buses 13/14
+
 ## 1.3.4 - 2025-01-27
 - Update default I2C port to "13" for Raspberry Pi 5 GPIO I2C support
 - Change default update_interval from 1 to 5 seconds to minimize I2C/USB interference
