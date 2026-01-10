@@ -133,6 +133,8 @@ def initialize_display():
     except Exception as e:
         print(f"ERROR: Failed to initialize display: {e}")
         print(f"Exception type: {type(e).__name__}")
+        import traceback
+        print(f"Full traceback:\n{traceback.format_exc()}")
         print(f"Tried I2C port: {port_num}, address: 0x{i2c_address:02X}")
         print(f"Display type: {display_type}")
         print(f"Display dimensions: {width}x{height}")
