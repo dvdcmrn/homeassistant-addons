@@ -23,7 +23,7 @@ i2c_address = int(display_config.get('i2c_address', '0x3C'), 16)
 i2c_port = display_config.get('i2c_port', 'auto')
 width = display_config.get('width', 128)
 height = display_config.get('height', 64)
-rotate = display_config.get('rotate', 0)
+rotate = int(display_config.get('rotate', 0))  # Ensure rotate is an integer
 contrast = display_config.get('contrast', 255)
 
 # System configuration
@@ -121,30 +121,37 @@ def initialize_display():
         # Create I2C connection - match working example: simple int conversion
         serial = i2c(port=int(port_num), address=i2c_address)
         
-        # Initialize display - match working example: simple initialization without rotate initially
-        # Try with rotate parameter first, then without if it fails
+        # Initialize display - match working example: simple initialization
+        # Working example uses: sh1106(serial, width=128, height=64) - no rotate parameter
         device = None
+        last_error = None
+        
+        # First try exactly like working example: without rotate parameter
         try:
             if display_type == 'sh1106':
-                # Try with rotate parameter first (if rotate is 0, it should work fine)
-                device = sh1106(serial, width=width, height=height, rotate=rotate if rotate else 0)
+                device = sh1106(serial, width=width, height=height)
             else:
-                device = ssd1306(serial, width=width, height=height, rotate=rotate if rotate else 0)
-            print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X}")
-        except (AssertionError, Exception) as e:
-            print(f"Failed to initialize {display_type} at 0x{i2c_address:02X}: {type(e).__name__}: {e}")
-            # Try without rotate parameter (match working example)
-            print(f"Trying without rotate parameter...")
-            try:
-                if display_type == 'sh1106':
-                    device = sh1106(serial, width=width, height=height)
-                else:
-                    device = ssd1306(serial, width=width, height=height)
-                print(f"Successfully initialized {display_type} without rotate parameter")
-            except Exception as e2:
-                print(f"Without rotate also failed: {type(e2).__name__}: {e2}")
-                # Try alternative display type
-                print(f"Trying alternative display type...")
+                device = ssd1306(serial, width=width, height=height)
+            print(f"Successfully initialized {display_type} display at 0x{i2c_address:02X} (no rotate)")
+        except Exception as e:
+            last_error = e
+            print(f"Failed to initialize {display_type} without rotate: {type(e).__name__}: {e}")
+            # Try with rotate parameter if it was specified
+            if rotate != 0:
+                print(f"Trying with rotate parameter ({rotate})...")
+                try:
+                    if display_type == 'sh1106':
+                        device = sh1106(serial, width=width, height=height, rotate=rotate)
+                    else:
+                        device = ssd1306(serial, width=width, height=height, rotate=rotate)
+                    print(f"Successfully initialized {display_type} with rotate={rotate}")
+                except Exception as e2:
+                    print(f"With rotate also failed: {type(e2).__name__}: {e2}")
+                    last_error = e2
+            
+            # If still failed, try alternative display type (without rotate)
+            if device is None:
+                print(f"Trying alternative display type (without rotate)...")
                 try:
                     if display_type == 'sh1106':
                         device = ssd1306(serial, width=width, height=height)
@@ -163,10 +170,10 @@ def initialize_display():
                         print(f"Successfully initialized sh1106 at alternative address 0x{alt_address:02X}")
                     except Exception as e4:
                         print(f"Alternative address also failed: {type(e4).__name__}: {e4}")
-                        raise e  # Re-raise original error
+                        raise last_error  # Re-raise last error
         
         if device is None:
-            raise Exception("Failed to initialize display with all methods attempted")
+            raise Exception(f"Failed to initialize display: {last_error}") if last_error else Exception("Failed to initialize display")
         
         # Set contrast
         device.contrast(contrast)
