@@ -49,6 +49,7 @@ config/
 
 # Exported symbols (temporary files)
 exported_symbols/
+exported_icons/
 temp/
 *.tmp
 

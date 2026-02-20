@@ -227,9 +227,9 @@ def main():
         print(f"\n🎉 Successfully exported {len(exported)} symbols!")
         print(f"📁 Location: {exporter.output_dir}")
         print("\n📋 Next steps:")
-        print("1. Copy the exported SVG files to your Home Assistant www/sf_symbols/icons/ directory")
-        print("2. Restart Home Assistant or call the sf_symbols.refresh_icons service")
-        print("3. Use icons with the sfs: prefix (e.g., sfs:house, sfs:heart)")
+        print("1. Copy the exported SVG files to your Home Assistant www/dvdcmrn_icons/icons/ directory")
+        print("2. Restart Home Assistant or call the dvdcmrn_icons.refresh_icons service")
+        print("3. Use icons with the sf: prefix (e.g., sf:house, sf:heart)")
 
 if __name__ == "__main__":
     main()

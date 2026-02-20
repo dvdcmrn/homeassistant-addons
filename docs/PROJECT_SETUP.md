@@ -1,26 +1,31 @@
-# Home Assistant SF Symbols Integration Setup
+# dvdcmrn Home Assistant Icons - Development Setup
+
+This integration is distributed **only via HACS**; end users do not install it manually. This guide is for developers working on the repo.
 
 ## 1. Project Structure
 
 Create this folder structure in your VS Code workspace:
 
 ```
-sf_symbols_integration/
+homeassistant-icons/
 ├── custom_components/
-│   └── sf_symbols/
+│   └── dvdcmrn_icons/
 │       ├── __init__.py
 │       ├── manifest.json
 │       ├── services.yaml
 │       └── icon_manager.py
 ├── www/
-│   └── sf_symbols/
+│   └── dvdcmrn_icons/
 │       └── icons/
 │           └── (SF Symbol SVGs will go here)
 ├── docs/
-│   ├── README.md
-│   └── SETUP.md
+│   ├── SETUP.md
+│   └── PROJECT_SETUP.md
 ├── scripts/
 │   └── export_sf_symbols.py
+├── hacs.json
+├── info.md
+├── README.md
 └── requirements.txt
 ```
 
@@ -32,7 +37,7 @@ sf_symbols_integration/
 
 ### Create Virtual Environment
 ```bash
-cd sf_symbols_integration
+cd homeassistant-icons
 python3 -m venv venv
 source venv/bin/activate  # On macOS/Linux
 pip install homeassistant
@@ -62,28 +67,30 @@ Use the `sf-symbols-extractor` tool or create a custom AppleScript/Shell script.
 ## 4. Home Assistant Integration Files
 
 ### manifest.json
+Must include `issue_tracker` and other keys required by HACS. Example:
 ```json
 {
-  "domain": "sf_symbols",
-  "name": "SF Symbols Icon Provider",
+  "domain": "dvdcmrn_icons",
+  "name": "dvdcmrn Home Assistant Icons",
   "version": "1.0.0",
-  "documentation": "https://github.com/yourusername/sf-symbols-ha",
+  "documentation": "https://github.com/dvdcmrn/homeassistant-icons",
+  "issue_tracker": "https://github.com/dvdcmrn/homeassistant-icons/issues",
   "requirements": [],
-  "codeowners": ["@yourusername"],
+  "codeowners": ["@dvdcmrn"],
   "iot_class": "local_polling"
 }
 ```
 
 ### __init__.py
 ```python
-"""SF Symbols integration for Home Assistant."""
+"""dvdcmrn Home Assistant Icons integration."""
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
-DOMAIN = "sf_symbols"
+DOMAIN = "dvdcmrn_icons"
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the SF Symbols integration."""
+    """Set up the dvdcmrn Home Assistant Icons integration."""
     # Register the icon provider
     hass.data[DOMAIN] = {}
     return True
@@ -92,9 +99,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 ## 5. Icon Management
 
 The integration will:
-1. Monitor the `www/sf_symbols/icons/` directory
+1. Monitor the `www/dvdcmrn_icons/icons/` directory
 2. Register available icons with Home Assistant
-3. Provide the `sfs:` prefix for icon usage
+3. Provide the `sf:` prefix for icon usage
 4. Handle SVG optimization for web use
 
 ## 6. Export Script Requirements

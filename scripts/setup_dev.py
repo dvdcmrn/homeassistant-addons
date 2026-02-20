@@ -63,7 +63,7 @@ def install_dependencies():
 
 def create_sample_icons():
     """Create sample SVG icons for testing."""
-    icons_dir = Path("www/sf_symbols/icons")
+    icons_dir = Path("www/dvdcmrn_icons/icons")
     icons_dir.mkdir(parents=True, exist_ok=True)
     
     sample_icons = {
@@ -122,11 +122,11 @@ echo "✅ Code quality checks passed"
 
 def main():
     """Main setup function."""
-    print("🚀 Setting up SF Symbols Home Assistant integration development environment")
+    print("Setting up dvdcmrn Home Assistant Icons development environment")
     print("=" * 70)
     
     # Check if we're in the right directory
-    if not Path("custom_components/sf_symbols").exists():
+    if not Path("custom_components/dvdcmrn_icons").exists():
         print("❌ Please run this script from the project root directory")
         sys.exit(1)
     

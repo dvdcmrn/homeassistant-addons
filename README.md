@@ -1,183 +1,93 @@
-# Pinnacles for Home Assistant
+# dvdcmrn Home Assistant Icons
 
-A custom Home Assistant integration that allows you to use Apple's SF Symbols in your Home Assistant dashboards.
+Use Apple SF Symbols in your Home Assistant dashboards with the `sf:` icon prefix. This integration is installed **only via HACS** (Home Assistant Community Store).
 
-## Overview
+## Installation (HACS only)
 
-This integration provides a way to export SF Symbols from macOS and use them in Home Assistant with the `pinnacles:` prefix. Perfect for creating beautiful, consistent iconography in your smart home dashboard.
+1. Open **HACS** in Home Assistant.
+2. Go to **Integrations** and click the three dots (top right), then **Custom repositories**.
+3. Add this repository URL: `https://github.com/dvdcmrn/homeassistant-icons`
+4. Choose category **Integration** and click **Add**.
+5. Search for **dvdcmrn Home Assistant Icons** in HACS and click **Download**.
+6. Restart Home Assistant.
 
-## Features
+## Configuration
 
-- Export SF Symbols to SVG format
-- Automatic SVG optimization for web use
-- Easy integration with Home Assistant dashboards
-- Batch export capabilities
-- Interactive symbol selection
-- Icon validation and management
-
-## Prerequisites
-
-- macOS with SF Symbols app installed (free from Apple Developer portal)
-- Home Assistant instance with custom integrations support
-- Python 3.9+ for the export script
-
-## Quick Start
-
-### 1. Install the Integration
-
-1. Copy the `custom_components/pinnacles/` folder to your Home Assistant `custom_components/` directory
-2. Create the directory structure:
-   ```
-   config/
-   ├── custom_components/
-   │   └── pinnacles/
-   └── www/
-       └── pinnacles/
-           └── icons/
-   ```
-
-### 2. Add to Configuration
-
-Add this to your `configuration.yaml`:
+Add to your `configuration.yaml`:
 
 ```yaml
-pinnacles:
+dvdcmrn_icons:
 ```
 
-### 3. Export Your First Icons
+Restart Home Assistant again. The integration will create `www/dvdcmrn_icons/icons/` in your config directory.
 
-```bash
-# Navigate to your project directory
-cd /path/to/pinnacles_integration
+## Adding icons
 
-# Run the interactive export script
-python3 scripts/export_pinnacles.py --interactive --output ~/exported_pinnacles
+Icons are SVG files in `www/dvdcmrn_icons/icons/`. You can add them in two ways:
 
-# Copy exported symbols to Home Assistant
-cp ~/exported_pinnacles/*.svg /path/to/homeassistant/www/pinnacles/icons/
-```
+- **Export on macOS:** Use the script in this repo (requires SF Symbols app and Python). Run it, then copy the exported SVGs to `www/dvdcmrn_icons/icons/` on your Home Assistant host (e.g. via Samba, SSH, or the file editor add-on).
+- **Manual:** Export SVGs from the [SF Symbols app](https://developer.apple.com/sf-symbols/) (Copy as SVG) and save into `www/dvdcmrn_icons/icons/` with the symbol name as filename (e.g. `house.svg`).
 
-### 4. Restart Home Assistant
-
-Restart Home Assistant to load the integration and refresh the icons.
+After adding or changing icons, call the service `dvdcmrn_icons.refresh_icons` or restart Home Assistant.
 
 ## Usage
 
-### Using Icons in Dashboard
-
-Once exported, use your Pinnacles icons with the `pinnacles:` prefix:
+Use the `sf:` prefix in your dashboards:
 
 ```yaml
-type: button
-entity: light.living_room
-icon: pinnacles:house
+icon: sf:house
 ```
 
-### Example Dashboard Card
+Example card:
 
 ```yaml
 type: entities
 entities:
   - entity: light.living_room
-    icon: pinnacles:house
+    icon: sf:house
     name: Living Room
   - entity: sensor.temperature
-    icon: pinnacles:thermometer
+    icon: sf:thermometer
     name: Temperature
   - entity: switch.fan
-    icon: pinnacles:wind
+    icon: sf:wind
     name: Fan
 ```
 
-## Export Script Usage
+## Export script (optional, macOS)
 
-### Interactive Mode
+If you have a Mac with the SF Symbols app and want to batch-export SVGs from this repo:
+
 ```bash
-python3 scripts/export_pinnacles.py --interactive
+git clone https://github.com/dvdcmrn/homeassistant-icons.git
+cd homeassistant-icons
+python3 scripts/export_sf_symbols.py --interactive --output ~/exported_icons
+# Copy ~/exported_icons/*.svg to your HA www/dvdcmrn_icons/icons/
 ```
 
-### Export Specific Symbols
-```bash
-python3 scripts/export_pinnacles.py --symbols house heart star gear
-```
+Other commands: `--symbols house heart star`, `--list`, `--output /path`.
 
-### List Available Symbols
-```bash
-python3 scripts/export_pinnacles.py --list
-```
+## Services
 
-### Custom Output Directory
-```bash
-python3 scripts/export_pinnacles.py --output ~/my_icons --symbols house heart
-```
-
-## Repository Structure
-
-```
-pinnacles_integration/
-├── custom_components/
-│   └── pinnacles/
-│       ├── __init__.py          # Main integration file
-│       ├── manifest.json        # Integration metadata
-│       ├── services.yaml        # Service definitions
-│       └── icon_manager.py      # Icon management utilities
-├── www/
-│   └── pinnacles/
-│       └── icons/               # Place exported SVGs here
-├── scripts/
-│   └── export_pinnacles.py      # Pinnacles export script
-├── docs/
-│   ├── SETUP.md                 # Detailed setup instructions
-│   └── PROJECT_SETUP.md         # Development setup guide
-└── README.md                    # This file
-```
-
-## Available Services
-
-- `pinnacles.refresh_icons`: Refresh the list of available icons after adding new ones
+- **dvdcmrn_icons.refresh_icons** – Refresh the list of available icons after adding new files.
 
 ## Troubleshooting
 
-### Icons Not Showing
-1. Check that SVG files are in the correct directory: `www/pinnacles/icons/`
-2. Ensure file names match the icon names you're using
-3. Restart Home Assistant or call `pinnacles.refresh_icons`
-4. Check the Home Assistant logs for any errors
+- **Icons not showing:** Ensure SVGs are in `www/dvdcmrn_icons/icons/`, filenames match the icon name (e.g. `house.svg` for `sf:house`), then call `dvdcmrn_icons.refresh_icons` or restart.
+- **Export script:** Needs SF Symbols app and AppleScript permissions; use `--interactive` for step-by-step.
 
-### Export Script Issues
-1. Ensure SF Symbols app is installed and can be automated
-2. Check that AppleScript permissions are granted
-3. Try running the script with `--interactive` flag for debugging
+## Repository structure
 
-## Documentation
+```
+custom_components/dvdcmrn_icons/   # Integration (installed by HACS)
+scripts/export_sf_symbols.py      # Optional macOS export script
+docs/                              # Extra docs
+```
 
-- [Detailed Setup Guide](docs/SETUP.md)
-- [Development Setup](docs/PROJECT_SETUP.md)
+## License and disclaimer
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This integration is for personal use only. SF Symbols are copyrighted by Apple Inc. and subject to their licensing terms.
-
-## Disclaimer
-
-This integration is not affiliated with Apple Inc. SF Symbols are copyrighted by Apple Inc. and subject to their licensing terms. This integration is provided for educational and personal use only.
+For personal use. SF Symbols are copyright Apple Inc.; this project is not affiliated with Apple.
 
 ## Support
 
-If you encounter any issues:
-
-1. Check the troubleshooting section
-2. Review the detailed setup guide
-3. Open an issue on GitHub with detailed information about your setup
-
----
-
-Made for the Home Assistant community
+Open an issue on GitHub with your setup details if something does not work.

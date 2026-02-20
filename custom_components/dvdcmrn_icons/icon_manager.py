@@ -1,4 +1,4 @@
-"""Icon management for Pinnacles integration."""
+"""Icon management for dvdcmrn Home Assistant Icons integration."""
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -6,8 +6,8 @@ import xml.etree.ElementTree as ET
 
 _LOGGER = logging.getLogger(__name__)
 
-class PinnaclesIconManager:
-    """Manage Pinnacles icons for Home Assistant."""
+class DvdcmrnIconsIconManager:
+    """Manage icons for Home Assistant."""
     
     def __init__(self, hass, icons_dir: Path):
         """Initialize the icon manager."""
@@ -71,4 +71,4 @@ class PinnaclesIconManager:
             root = tree.getroot()
             return root.tag.endswith('svg')
         except Exception:
-            return False 
+            return False

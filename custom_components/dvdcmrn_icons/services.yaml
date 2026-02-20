@@ -1,0 +1,4 @@
+refresh_icons:
+  name: Refresh Icons
+  description: Refresh the list of available icons
+  fields: {}

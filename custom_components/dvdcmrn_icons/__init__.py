@@ -1,4 +1,4 @@
-"""Pinnacles integration for Home Assistant."""
+"""dvdcmrn Home Assistant Icons integration."""
 import logging
 import os
 from pathlib import Path
@@ -9,11 +9,11 @@ from homeassistant.helpers.service import async_register_admin_service
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "pinnacles"
-ICONS_DIR = "www/pinnacles/icons"
+DOMAIN = "dvdcmrn_icons"
+ICONS_DIR = "www/dvdcmrn_icons/icons"
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the Pinnacles integration."""
+    """Set up the dvdcmrn Home Assistant Icons integration."""
     hass.data[DOMAIN] = {}
     
     # Ensure icons directory exists
@@ -32,11 +32,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         schema=None,
     )
     
-    _LOGGER.info("Pinnacles integration loaded successfully")
+    _LOGGER.info("dvdcmrn Home Assistant Icons integration loaded successfully")
     return True
 
 async def register_icon_provider(hass: HomeAssistant):
-    """Register the Pinnacles icon provider."""
+    """Register the icon provider."""
     from homeassistant.components.frontend import async_register_built_in_panel
     
     # Register the icon provider with Home Assistant
@@ -53,7 +53,7 @@ async def handle_refresh_icons(call: ServiceCall):
     # Scan for new icons
     icon_count = len(list(icons_path.glob("*.svg")))
     
-    _LOGGER.info(f"Refreshed Pinnacles icons: {icon_count} icons found")
+    _LOGGER.info(f"Refreshed icons: {icon_count} icons found")
     
     # Notify frontend to refresh
-    hass.bus.async_fire("pinnacles_refreshed", {"count": icon_count}) 
+    hass.bus.async_fire("dvdcmrn_icons_refreshed", {"count": icon_count})
