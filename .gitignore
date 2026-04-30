@@ -1,0 +1,19 @@
+# Local troubleshooting and example files
+local/
+
+# OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
