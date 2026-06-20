@@ -2,6 +2,9 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.8 - 2026-06-20
+- Declare **`full_access: true`**, **`protected: false`**, **`SYS_ADMIN`**, and custom **AppArmor profile** so `enable_i2c.sh` can mount HAOS boot partitions (Pi 5 NVMe included), matching HassOSConfigurator pattern
+
 ## 1.3.7 - 2026-06-20
 - Fix `enable_i2c.sh` not executable in container (`Permission denied` after rebuild)
 

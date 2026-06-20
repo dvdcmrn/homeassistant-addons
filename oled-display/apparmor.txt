@@ -1,0 +1,61 @@
+#include <tunables/global>
+
+profile oled_display flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+
+  capability,
+  file,
+  mount options=(user,rw,noatime) /dev/sda1,
+  mount options=(user,rw,noatime) /dev/sda2,
+  mount options=(user,rw,noatime) /dev/sdb1,
+  mount options=(user,rw,noatime) /dev/sdb2,
+  mount options=(user,rw,noatime) /dev/mmcblk0p1,
+  mount options=(user,rw,noatime) /dev/mmcblk0p2,
+  mount options=(user,rw,noatime) /dev/nvme0n1p1,
+
+  mount,
+  umount,
+  remount,
+
+  capability setgid,
+  capability setuid,
+  capability dac_override,
+  capability sys_rawio,
+
+  # S6-Overlay
+  /bin/** ix,
+  /usr/bin/** ix,
+  /usr/lib/bashio/** ix,
+  /etc/s6/** rix,
+  /run/s6/** rix,
+  /etc/services.d/** rwix,
+  /etc/cont-init.d/** rwix,
+  /etc/cont-finish.d/** rwix,
+  /init rix,
+  /var/run/** mrwkl,
+  /var/run/ mrwkl,
+  /proc/self/attr/** mrwkl,
+
+  # Boot partitions (HAOS I2C enablement)
+  /dev/sda1 mrwkl,
+  /dev/sda2 mrkwl,
+  /dev/sdb1 mrwkl,
+  /dev/sdb2 mrkwl,
+  /dev/mmcblk0p1 mrwkl,
+  /dev/mmcblk0p2 mrkwl,
+  /dev/nvme0n1p1 mrwkl,
+  /dev/* mrwkl,
+  /tmp/* mrwkl,
+  /tmp/ mrkwl,
+
+  # GPIO / I2C
+  /dev/i2c-* rw,
+  /dev/gpiomem rw,
+  /sys/** r,
+
+  # Data access
+  /data/** rw,
+
+  ptrace (trace,read) peer=docker-default,
+  signal (receive) set=(kill,term) peer=/usr/bin/docker,
+}
