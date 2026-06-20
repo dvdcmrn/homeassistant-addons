@@ -24,7 +24,7 @@ RUN pip3 install --no-cache-dir \
 COPY rootfs /
 
 # Make scripts executable
-RUN chmod a+x /etc/services.d/oled/run
+RUN chmod a+x /etc/services.d/oled/run /usr/bin/enable_i2c.sh /usr/bin/oled_monitor.py
 
 # Labels
 LABEL \

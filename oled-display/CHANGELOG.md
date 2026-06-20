@@ -2,6 +2,9 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.7 - 2026-06-20
+- Fix `enable_i2c.sh` not executable in container (`Permission denied` after rebuild)
+
 ## 1.3.6 - 2026-06-20
 - Default **`display.i2c_port`** to **`1`** for Pi 5 GPIO header I2C (matches Debian/`luma` setups)
 - Default **`system.enable_i2c`** to **`true`**
