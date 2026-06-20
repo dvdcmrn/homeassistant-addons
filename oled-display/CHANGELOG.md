@@ -2,6 +2,10 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.4.1 - 2026-06-20
+- Drop **`full_access`** from this add-on; use **HassOS I2C Configurator** for boot I2C enablement (OLED add-on keeps **`devices`** + **`SYS_RAWIO`** for display access)
+- Default **`enable_i2c`** to **`false`**; fix false-positive protection-mode message in mount errors
+
 ## 1.4.0 - 2026-06-20
 - Restore **`devices`** / **`gpio`** alongside **`full_access`** — HAOS still requires explicit I2C device mapping for `/dev/i2c-*` access
 
