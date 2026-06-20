@@ -5,7 +5,7 @@ My personal Home Assistant add-on library featuring custom add-ons for enhanced 
 ## Repository Information
 
 - **Repository URL**: https://github.com/dvdcmrn/homeassistant-addons
-- **Maintainer**: David <git@dvdcmrn.de>
+- **Maintainer**: [dvdcmrn](https://github.com/dvdcmrn)
 
 ## Add-ons
 
@@ -23,7 +23,7 @@ Display system information on an OLED display connected to your Home Assistant d
 - Automatic I2C device detection
 - Debug mode for testing without OLED display
 
-**Latest Version**: 1.3.6
+**Latest Version**: 1.3.7
 
 **Installation:**
 1. Add this repository to your Home Assistant instance
