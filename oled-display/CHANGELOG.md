@@ -2,6 +2,10 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.9 - 2026-06-20
+- Fix store parse error: Supervisor 2026.x requires **`apparmor: false`** (boolean), not `apparmor: profile`
+- Drop redundant **`devices`** / **`gpio`** when using **`full_access: true`** (was blocking store reload)
+
 ## 1.3.8 - 2026-06-20
 - Declare **`full_access: true`**, **`protected: false`**, **`SYS_ADMIN`**, and custom **AppArmor profile** so `enable_i2c.sh` can mount HAOS boot partitions (Pi 5 NVMe included), matching HassOSConfigurator pattern
 

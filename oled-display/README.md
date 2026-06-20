@@ -53,7 +53,7 @@ system:
   1. **First Reboot**: Places I2C configuration files in the boot partition
   2. **Second Reboot**: Activates I2C hardware and loads kernel modules
   3. **Third Reboot** (sometimes needed): Ensures all I2C devices are properly initialized
-- On some systems, the add-on must declare **`full_access: true`** and **`protected: false`** (see `config.yaml`) so it can mount the HAOS boot partition — same pattern as [HassOSConfigurator Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C)
+- On HAOS, the add-on uses **`full_access: true`** and **`apparmor: false`** (same pattern as [HassOSConfigurator Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C)) so it can mount the boot partition for I2C enablement
 - This feature is off by default
 - Check add-on logs after each reboot to see progress
 
