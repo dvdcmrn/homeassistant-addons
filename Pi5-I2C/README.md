@@ -36,7 +36,7 @@ This functionality is automatically integrated into the OLED System Monitor add-
 
 The script performs the following operations:
 
-1. **Checks for existing I2C devices** - If I2C is already enabled, exits gracefully
+1. **Checks for existing I2C devices** - Logs status but still verifies boot `config.txt` when nodes already exist
 2. **Scans for boot partitions** - Looks for common partition names where config.txt might be located
 3. **Mounts partitions** - Temporarily mounts boot partitions to access configuration files
 4. **Configures I2C parameters** - Adds the following to config.txt:

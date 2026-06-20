@@ -2,6 +2,12 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.3.6 - 2026-06-20
+- Default **`display.i2c_port`** to **`1`** for Pi 5 GPIO header I2C (matches Debian/`luma` setups)
+- Default **`system.enable_i2c`** to **`true`**
+- Run I2C boot-partition verification even when `/dev/i2c-*` already exist
+- Correct Pi 5 documentation: use bus **1** for GPIO2/GPIO3 wiring, not 13/14
+
 ## 1.3.5 - 2025-01-27
 - Add I2C devices /dev/i2c-13 and /dev/i2c-14 to devices list for Pi 5 GPIO I2C support
 - Fix permission issues when accessing buses 13/14

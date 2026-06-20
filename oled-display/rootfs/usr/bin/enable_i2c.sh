@@ -26,14 +26,13 @@ log_info "Starting enhanced I2C enablement for Raspberry Pi (Pi 4/5)"
 log_info "Based on HassOSConfigurator implementation by adamoutler"
 log_info "This process may require up to 3 reboots for full I2C enablement"
 
-# Check if I2C is already available
+# Device nodes can exist before boot config is correct (common on Pi 5 / HAOS).
 if ls /dev/i2c-* >/dev/null 2>&1; then
     log_info "I2C devices already available: $(ls /dev/i2c-* | xargs)"
-    log_info "I2C is already enabled! No further action needed."
-    exit 0
+    log_info "Continuing to verify boot partition config (dtparam=i2c_arm=on)..."
+else
+    log_info "I2C not detected, attempting comprehensive enablement..."
 fi
-
-log_info "I2C not detected, attempting comprehensive enablement..."
 
 # Function to perform I2C configuration on a partition
 performWork() {

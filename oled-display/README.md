@@ -73,7 +73,7 @@ If you need to enable I2C outside of the OLED add-on, you can use the standalone
 |--------|-------------|---------|
 | `type` | Display type (ssd1306 or sh1106) | sh1106 |
 | `i2c_address` | I2C address of the display (usually 0x3C) | 0x3C |
-| `i2c_port` | I2C port (auto, 0, 1, etc.) | auto |
+| `i2c_port` | I2C port (`1` for Pi 3/4/5 GPIO header; see troubleshooting) | 1 |
 | `width` | Display width in pixels | 128 |
 | `height` | Display height in pixels | 64 |
 | `rotate` | Display rotation (0, 1, 2, 3) | 0 |
@@ -83,11 +83,12 @@ If you need to enable I2C outside of the OLED add-on, you can use the standalone
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `update_interval` | Update interval in seconds (recommend 5+ to minimize I2C/USB interference) | 1 |
+| `update_interval` | Update interval in seconds (recommend 5+ to minimize I2C/USB interference) | 5 |
 | `title` | Title to display | home assistant |
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
 | `debug_mode` | Run in debug mode (console output only) | false |
+| `enable_i2c` | Write HAOS boot `config.txt` I2C settings when needed | true |
 
 ### Metrics
 
@@ -136,9 +137,8 @@ If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`
    - Set `i2c_port` to a specific value instead of "auto"
    - Common values:
      - Raspberry Pi Zero: 0
-     - Raspberry Pi 3/4: 1
-     - Raspberry Pi 5 (GPIO I2C): 13 or 14 (try 13 first, then 14, then 1)
-   - **Note for Pi 5**: Buses 0 and 1 are virtual adapters and may not work for hardware GPIO I2C. Use bus 13 or 14 for GPIO 2/3 connections.
+     - Raspberry Pi 3/4/5 (40-pin GPIO SDA/SCL): **1**
+   - **Pi 5 note:** Standard SH1106/SSD1306 modules wired to **GPIO2 (SDA)** and **GPIO3 (SCL)** use **`/dev/i2c-1`**. Buses **13** and **14** are different controllers; do not use them for header wiring. A full-grid scan on 13/14 is not trustworthy.
 
 4. **Verify hardware connections:**
    - Ensure proper wiring (VCC, GND, SCL, SDA)
@@ -162,9 +162,10 @@ If you see "ERROR: Failed to initialize display" but I2C devices are present:
 
 4. **Hardware troubleshooting:**
    - Ensure proper power supply (3.3V, not 5V)
-   - Check for loose connections
-   - Try a different I2C port (0, 1, 13, 14, etc.)
-   - For Pi 5: Start with bus 13, then try 14, then 1
+   - Check for loose connections (PoE HAT / case stacking often misaligns GPIO pins on Pi 5)
+   - Confirm the display on the bus with host debug SSH: `i2cdetect -y 1` (port **22222**, not the SSH add-on shell)
+   - Try address **0x3D** if the module has an address jumper
+   - Disable **Protection mode** in Settings → System → Hardware
 
 5. **Enable debug mode:**
    - Set `debug_mode: true` to run without the display and see system metrics
@@ -182,12 +183,15 @@ This will output all metrics to the console/logs instead of trying to use the OL
 
 ## Example Configurations
 
-### Basic System Monitor
+### Basic System Monitor (Pi 5 / SH1106 on GPIO header)
 ```yaml
 display:
   type: "sh1106"
   i2c_address: "0x3C"
-  i2c_port: "auto"
+  i2c_port: "1"
+system:
+  enable_i2c: true
+  update_interval: 5
 metrics:
   - type: "cpu"
     position: 1
