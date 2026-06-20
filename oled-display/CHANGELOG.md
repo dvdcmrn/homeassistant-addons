@@ -2,6 +2,9 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.4.0 - 2026-06-20
+- Restore **`devices`** / **`gpio`** alongside **`full_access`** — HAOS still requires explicit I2C device mapping for `/dev/i2c-*` access
+
 ## 1.3.9 - 2026-06-20
 - Fix store parse error: Supervisor 2026.x requires **`apparmor: false`** (boolean), not `apparmor: profile`
 - Drop redundant **`devices`** / **`gpio`** when using **`full_access: true`** (was blocking store reload)
