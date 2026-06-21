@@ -49,7 +49,7 @@ The script performs the following operations:
 
 ⚠️ **Reboot Required**: After running this script, you must perform a **hard power-off reboot** for the changes to take effect.
 
-⚠️ **Protection Mode**: This script cannot run if Home Assistant OS protection mode is enabled. Disable protection mode in the Info screen before running.
+⚠️ **Boot partition access**: Requires an add-on with **`full_access: true`** in its manifest (for example **HassOS I2C Configurator**). That add-on installs as **`protected: false`** automatically. There is no global Settings → System → Hardware protection switch on current Home Assistant versions.
 
 ⚠️ **Multiple Reboots Required**: You may need to reboot up to 3 times for full I2C enablement:
 
@@ -67,17 +67,21 @@ This multi-reboot process is necessary because Home Assistant OS uses a read-onl
 
 ## Troubleshooting
 
-### Protection Mode Error
-```
-Detected Protection Mode is enabled. Disable Protection Mode in Info Screen.
-```
-**Solution**: Go to Settings → System → Hardware and disable Protection Mode.
+### Boot partition mount failed
 
-### No Partitions Found
+```
+Could not mount boot partition (need HassOS I2C Configurator or full_access add-on).
+```
+
+**Solution**: Run **HassOS I2C Configurator** (or adamoutlier Pi4EnableI2C) once. This script cannot mount boot partitions from a normal add-on container.
+
+### No partitions found
+
 ```
 No boot partitions found. Protection mode may be enabled?
 ```
-**Solution**: Ensure protection mode is disabled and try again.
+
+**Solution**: Use a **`full_access`** add-on (see above), not the OLED display add-on.
 
 ### I2C Still Not Working After Reboot
 1. Verify the configuration was written to config.txt

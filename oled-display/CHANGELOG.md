@@ -2,6 +2,12 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.5.0 - 2026-06-20
+- Match [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator) manifest: **`full_access: true`**, **`apparmor: false`**, **`SYS_ADMIN`** (no **`devices`** / **`gpio`** — those forced **`protected: true`** and hid the Info-tab protection toggle)
+- Built-in **[Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C)** configurator (`system.enable_i2c`, default **true**)
+- Built-in **[HassOsEnableSSH](https://github.com/adamoutler/HassOSConfigurator/tree/main/HassOsEnableSSH)** configurator (`system.enable_ssh`, `system.ssh_public_key`)
+- **Reinstall required** when upgrading from 1.4.x so Supervisor applies the new security profile
+
 ## 1.4.1 - 2026-06-20
 - Drop **`full_access`** from this add-on; use **HassOS I2C Configurator** for boot I2C enablement (OLED add-on keeps **`devices`** + **`SYS_RAWIO`** for display access)
 - Default **`enable_i2c`** to **`false`**; fix false-positive protection-mode message in mount errors

@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
-description: "Customizable system stats display for OLED screens"
-version: "1.4.1"
+description: "System stats on an OLED display; optional HAOS I2C and debug SSH setup"
+version: "1.5.0"
 slug: "oled_display"
 panel_icon: "mdi:monitor-dashboard"
 init: false
@@ -10,13 +10,10 @@ arch:
   - armv7
 startup: application
 boot: auto
-devices:
-  - /dev/i2c-0
-  - /dev/i2c-1
-  - /dev/i2c-13
-  - /dev/i2c-14
-gpio: true
+full_access: true
+apparmor: false
 privileged:
+  - SYS_ADMIN
   - SYS_RAWIO
 options:
   display:
@@ -33,7 +30,9 @@ options:
     show_title: true
     show_temperature: true
     debug_mode: false
-    enable_i2c: false
+    enable_i2c: true
+    enable_ssh: false
+    ssh_public_key: ""
   metrics:
     - type: "cpu"
       position: 1
@@ -73,6 +72,8 @@ schema:
     show_temperature: bool
     debug_mode: bool
     enable_i2c: bool
+    enable_ssh: bool
+    ssh_public_key: str
   metrics:
     - type: list(cpu|memory|disk|temperature|uptime)
       position: int(1,10)

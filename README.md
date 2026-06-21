@@ -23,7 +23,7 @@ Display system information on an OLED display connected to your Home Assistant d
 - Automatic I2C device detection
 - Debug mode for testing without OLED display
 
-**Latest Version**: 1.4.0
+**Latest Version**: 1.5.0
 
 **Installation:**
 1. Add this repository to your Home Assistant instance
@@ -31,8 +31,7 @@ Display system information on an OLED display connected to your Home Assistant d
 3. Configure the add-on with your display settings
 4. Start the add-on
 
-**I2C Enablement:**
-The add-on includes enhanced I2C enablement functionality based on the [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) project by [adamoutler](https://github.com/adamoutler). This allows automatic I2C configuration for Raspberry Pi 4 and Pi 5 devices running Home Assistant OS.
+**HAOS setup (1.5.0+):** Built-in [Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) and [HassOsEnableSSH](https://github.com/adamoutler/HassOSConfigurator/tree/main/HassOsEnableSSH) configurators using the same `full_access` manifest as adamoutler's HassOSConfigurator add-ons. Reinstall when upgrading from 1.4.x.
 
 For detailed configuration options, troubleshooting, and I2C setup instructions, see the [OLED System Monitor documentation](./oled-display/README.md).
 

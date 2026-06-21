@@ -2,14 +2,19 @@
 
 bashio::log.info "Starting OLED display service..."
 
-# Optionally enable I2C before starting (also verifies boot config when nodes already exist)
+# Optional HAOS configurators (adamoutler HassOSConfigurator pattern)
+if bashio::config.true 'system.enable_ssh'; then
+  bashio::log.info "system.enable_ssh=true -> running debug SSH configurator"
+  /usr/bin/enable_ssh.sh || bashio::log.warning "SSH configurator encountered issues; continuing"
+fi
+
 if bashio::config.true 'system.enable_i2c'; then
-  bashio::log.info "system.enable_i2c=true → attempting I2C enablement / boot config check"
-  /usr/bin/enable_i2c.sh || bashio::log.warning "I2C enablement script encountered issues; continuing"
+  bashio::log.info "system.enable_i2c=true -> running I2C configurator"
+  /usr/bin/enable_i2c.sh || bashio::log.warning "I2C configurator encountered issues; continuing"
 elif ls /dev/i2c-* >/dev/null 2>&1; then
-  bashio::log.info "I2C devices already present ($(ls /dev/i2c-* | xargs)). Skipping enablement."
+  bashio::log.info "I2C devices already present ($(ls /dev/i2c-* | xargs))"
 else
-  bashio::log.info "system.enable_i2c not set; skipping I2C enablement"
+  bashio::log.info "system.enable_i2c=false and no /dev/i2c-* nodes; skipping I2C configurator"
 fi
 
 python3 /usr/bin/oled_monitor.py

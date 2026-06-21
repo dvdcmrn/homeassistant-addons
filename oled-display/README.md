@@ -30,51 +30,39 @@ Connect your OLED display to the Raspberry Pi:
 
 Make sure I2C is enabled on your Home Assistant device.
 
-### Enable I2C on HAOS (required once)
+### HAOS first-time setup (I2C + debug SSH)
 
-On Home Assistant OS, enable GPIO I2C **before** this add-on:
+From **1.5.0**, this add-on uses the same **`full_access: true`** / **`SYS_ADMIN`** manifest pattern as [adamoutler/HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator) ([Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C), [HassOsEnableSSH](https://github.com/adamoutler/HassOSConfigurator/tree/main/HassOsEnableSSH)). It can mount HAOS boot partitions to enable GPIO I2C and debug SSH on port **22222**.
 
-1. Install and run **[HassOS I2C Configurator](https://github.com/Poeschl/Hassio-Addons)** or [adamoutler/HassOSConfigurator Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) once (those add-ons use `full_access` and can mount the boot partition).
-2. Hard power-cycle the Pi 2–3 times.
-3. Confirm `i2cdetect -y 1` shows **`3c`** on the HAOS host.
-4. Start this OLED add-on (`i2c_port: 1`, `0x3C`, `sh1106`).
-
-Optional **`system.enable_i2c: true`** in this add-on only attempts boot-partition writes when the container has mount access; on current Supervisor builds that usually means using the dedicated I2C Configurator add-on instead.
-
-### Optional: Enable I2C automatically (legacy / limited)
-
-If you are running Home Assistant OS on a Raspberry Pi (Pi 4 or Pi 5) and I2C is not enabled, you can let the add-on attempt to enable I2C using enhanced functionality based on the [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) project by [adamoutler](https://github.com/adamoutler).
-
-1. Edit the add-on configuration and set:
+**After upgrading from 1.4.x:** uninstall the old add-on, reload the repository, install **1.5.0** fresh, then start it. A manifest-only update does not reset **`protected: true`** from older installs.
 
 ```yaml
 system:
-  enable_i2c: true
+  enable_i2c: true          # writes dtparam=i2c_arm=on to boot config.txt
+  enable_ssh: true          # optional: enable host debug SSH on port 22222
+  ssh_public_key: "ssh-ed25519 AAAA... your-key"
+display:
+  type: "sh1106"
+  i2c_address: "0x3C"
+  i2c_port: "1"
 ```
 
-2. Start the add-on. It will perform comprehensive I2C enablement:
-   - Scan for boot partitions (sda1, sdb1, mmcblk0p1, nvme0n1p1)
-   - Add `dtparam=i2c_vc=on` and `dtparam=i2c_arm=on` to config.txt
-   - Set up kernel module loading for both HASSOS and Raspbian
-   - Load `i2c-dev` and `i2c-bcm2835` modules if possible
+1. Start the add-on and read the logs.
+2. **Hard power-off reboot** 2–3 times (not just Restart in the UI).
+3. Confirm I2C: `i2cdetect -y 1` on the **host** via `ssh root@thor -p 22222` (not the Terminal & SSH add-on shell).
+4. When `0x3c` appears, the OLED should initialize on bus **1**.
 
-**Important Notes:**
-- This may require up to **3 hard power-off reboots** (not just restarts) to take full effect
-- **Why Multiple Reboots Are Needed:**
-  1. **First Reboot**: Places I2C configuration files in the boot partition
-  2. **Second Reboot**: Activates I2C hardware and loads kernel modules
-  3. **Third Reboot** (sometimes needed): Ensures all I2C devices are properly initialized
-- On HAOS, the add-on uses **`full_access: true`** and **`apparmor: false`** (same pattern as [HassOSConfigurator Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C)) so it can mount the boot partition for I2C enablement
-- This feature is off by default
-- Check add-on logs after each reboot to see progress
+Set **`enable_i2c: false`** and **`enable_ssh: false`** after the first successful setup if you prefer.
 
-**What to Expect During Each Restart:**
-- **After 1st Restart**: Add-on will show "I2C devices already available" or continue with configuration
-- **After 2nd Restart**: I2C hardware should be enabled, but device nodes may not be fully created yet
-- **After 3rd Restart**: All I2C devices should be available at `/dev/i2c-*` and the OLED display should work
+### Protection mode (Info tab, not the three-dot menu)
 
-**Standalone I2C Enablement:**
-If you need to enable I2C outside of the OLED add-on, you can use the standalone script in the [Pi5-I2C directory](../../Pi5-I2C/) which contains the complete implementation.
+There is **no** global Settings → System → Hardware protection switch, and **no** protection option in the add-on three-dot menu.
+
+Add-ons that declare **`full_access: true`** (this add-on from 1.5.0, HassOS I2C Configurator, HassOS SSH Configurator) install with **`protected: false`** automatically. On the add-on **Info** tab you may see **Protection mode** — it should already be **off**. If it is **on**, turn it **off** there, then restart the add-on.
+
+Older 1.4.x installs used **`devices`** + **`gpio`** without **`full_access`**, stayed **`protected: true`**, and never showed that toggle. Reinstall 1.5.0 to pick up the new manifest.
+
+**Security note:** `full_access` is rating **1** (same class as adamoutler configurators). Disable SSH/I2C configurators after first-run if you only need the display.
 
 ## Configuration
 
@@ -99,7 +87,9 @@ If you need to enable I2C outside of the OLED add-on, you can use the standalone
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
 | `debug_mode` | Run in debug mode (console output only) | false |
-| `enable_i2c` | Write HAOS boot `config.txt` I2C settings when needed | true |
+| `enable_i2c` | Run Pi4EnableI2C-style boot configurator on start | true |
+| `enable_ssh` | Run HassOsEnableSSH-style configurator (port 22222) | false |
+| `ssh_public_key` | Full line from your `id_ed25519.pub` / `id_rsa.pub` | (empty) |
 
 ### Metrics
 
@@ -136,9 +126,9 @@ You can configure multiple metrics to display. Each metric has:
 
 If you get an error like `DeviceNotFoundError: I2C device not found: /dev/i2c-1`, try these steps:
 
-1. **Enable I2C in Home Assistant:**
-   - Go to Settings → System → Hardware
-   - Enable I2C interface
+1. **Run the built-in configurators:**
+   - Set `system.enable_i2c: true`, start the add-on, hard reboot 2–3 times
+   - Check add-on logs for boot-partition mount errors; if present, open the add-on **Info** tab and turn **Protection mode** off
 
 2. **Check available I2C devices:**
    - Set `debug_mode: true` in the configuration
@@ -176,9 +166,10 @@ If you see "ERROR: Failed to initialize display" but I2C devices are present:
    - Check for loose connections (PoE HAT / case stacking often misaligns GPIO pins on Pi 5)
    - Confirm the display on the bus with host debug SSH: `i2cdetect -y 1` (port **22222**, not the SSH add-on shell)
    - Try address **0x3D** if the module has an address jumper
-   - Disable **Protection mode** in Settings → System → Hardware
+   - Run **HassOS I2C Configurator** once if boot I2C may not be enabled yet
+   - Or use this add-on's **`system.enable_i2c: true`** (1.5.0+, requires fresh install with `full_access` manifest)
 
-5. **Enable debug mode:**
+### Add-on protection (Info tab only)
    - Set `debug_mode: true` to run without the display and see system metrics
 
 ### Debug Mode
@@ -194,15 +185,36 @@ This will output all metrics to the console/logs instead of trying to use the OL
 
 ## Example Configurations
 
-### Basic System Monitor (Pi 5 / SH1106 on GPIO header)
+### First boot on HAOS (I2C + SSH + display)
 ```yaml
+system:
+  enable_i2c: true
+  enable_ssh: true
+  ssh_public_key: "ssh-ed25519 AAAA... paste full public key line"
+  update_interval: 5
 display:
   type: "sh1106"
   i2c_address: "0x3C"
   i2c_port: "1"
+metrics:
+  - type: "cpu"
+    position: 1
+  - type: "memory"
+    position: 2
+  - type: "disk"
+    position: 3
+```
+
+### Basic System Monitor (after I2C is enabled)
+```yaml
 system:
-  enable_i2c: true
+  enable_i2c: false
+  enable_ssh: false
   update_interval: 5
+display:
+  type: "sh1106"
+  i2c_address: "0x3C"
+  i2c_port: "1"
 metrics:
   - type: "cpu"
     position: 1

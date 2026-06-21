@@ -52,8 +52,8 @@ performWork() {
     
     local mount_result
     mount_result=$(mount "/dev/$partition" "$mount_point" 2>&1) || {
-        if [[ "$mount_result" == *"Permission denied"* ]] || [[ "$mount_result" == *"permission denied"* ]]; then
-            log_error "Could not mount boot partition (need HassOS I2C Configurator or full_access add-on)."
+        if [[ "$mount_result" == *"root"* ]] || [[ "$mount_result" == *"Permission denied"* ]] || [[ "$mount_result" == *"permission denied"* ]]; then
+            log_error "Could not mount boot partition. On the add-on Info tab, ensure Protection mode is OFF, then restart."
         fi
         log_warn "Failed to mount /dev/$partition: $mount_result"
         return 1
