@@ -1,0 +1,148 @@
+---
+description: Repo setup and maintenance preferences that are additive to karpathy-guidelines. Use when building, updating, and reviewing projects to keep documentation current, enforce response/style constraints, and standardize UI decisions.
+alwaysApply: true
+---
+
+# DVDCMRN Repo Specific Rules
+
+These rules are layered on top of `.cursor/rules/karpathy-guidelines.mdc`. If there is overlap, keep karpathy behavior and apply these as additional repo/setup preferences.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+## 1. Foundation and Precedence
+
+**These rules extend karpathy-guidelines, not replace them.**
+
+Before implementing:
+- Follow `karpathy-guidelines.mdc` first for execution behavior.
+- Apply this file for repo setup, maintenance cadence, documentation hygiene, and UI consistency.
+- If a conflict appears, ask for clarification instead of choosing silently.
+
+**Agent skills and rules canonical source:** [MCP Toolkit Skills and Rules Library](https://github.com/grumpytinkerers/mcp-toolkit) (`skills-library/`). Edit and curate skills/rules there; export to this project's `.cursor/skills/` and `.cursor/rules/` when you choose. See `skills-library/PRECEDENCE.md` in that repo for layer ordering. Do not copy full vendor skill trees into every app repo.
+
+## 2. Documentation Is Part of the Deliverable
+
+**README files stay current with the codebase.**
+
+When making meaningful project changes:
+- Update impacted `README` files in the same change set.
+- Ensure setup, usage, scripts, architecture notes, and known constraints match current behavior.
+- Do not leave documentation updates for "later" when code behavior already changed.
+
+## 3. Periodic Efficiency Reviews
+
+**Every few sessions, reassess whether the current setup is still the best fit.**
+
+On a regular cadence (roughly every few sessions):
+- Review structure, tooling, scripts, and workflows for unnecessary complexity or outdated choices.
+- Suggest small, practical improvements tied to the current project goals.
+- Prefer incremental, low-risk adjustments over broad refactors unless explicitly requested.
+
+## 4. Communication and Output Style
+
+**No emojis in responses, code, comments, commit text, or generated docs unless explicitly requested.**
+
+Always:
+- Keep language clear, direct, and plain text friendly.
+- Avoid decorative symbols that reduce grep-ability or professional tone.
+- Use concise explanations and actionable next steps.
+
+## 5. Default UI Design System (When UI Is Requested)
+
+**Use shadcn/ui as the baseline visual system with the following defaults.**
+
+When creating or updating UI work:
+- Style preset: `nova`
+- Base color: `zinc`
+- Theme intent: dark theme with light text
+- Primary/accent theme color: `yellow`
+- Chart color family: `yellow`
+- Heading font: `JetBrains Mono`
+- Body/UI font: `JetBrains Mono`
+- Icon library: `lucide`
+- Radius scale: `small`
+
+Do not introduce a conflicting visual system unless explicitly requested.
+
+## 6. Project-Specific Context Overrides (Fill Per Repo/Task)
+
+
+**Canonical Git repository:** `https://gitea.valhal.uk/dvdcmrn/homeassistant-icons`.
+
+**Use this section to add precise, current context that should guide implementation choices.**
+
+When these fields are filled:
+- Treat them as task-level constraints and preferences.
+- Ask before deviating from them.
+- Prefer concrete values over generic assumptions.
+
+### 6.1 Infrastructure and Environment Capabilities
+
+Use this area for deployment/runtime specifics (especially Docker and homelab work).
+
+Template:
+- Docker Compose conventions:
+  - Source of truth: live host compose can be source of truth; if so, sync host -> repo after changes.
+  - Compose style: single stack per host where practical, consistent service block order (`image`, `container_name`, `hostname`, `deploy`, `environment`, `volumes`, `labels`, `ports`, `depends_on`, `healthcheck`, `logging`, `networks`, `restart`).
+  - Network strategy: external `valhalla_network` (`dvdcmrn_valhalla_network`) with static `172.0.0.x` assignments by functional range; never reassign existing IPs, pick next free.
+  - Reverse proxy conventions: Traefik labels per service, `websecure` + TLS + certresolver, set `traefik.docker.network`.
+  - Auth conventions: protect relevant routes with `authelia-forwardauth` and keep auth policy aligned in Authelia config.
+  - Ports policy: if service is behind Traefik, prefer no direct host port unless needed (VNC/SSH/file transfer/special protocols).
+  - Env strategy: `${VAR}` style, include `TZ`, common vars like `PUID`, `PGID`, `CONFIG_PATH`, `DATA_PATH`, `CACHE_PATH`.
+  - Healthcheck/logging defaults: healthchecks with practical intervals/timeouts/retries; logging `json-file` with rotation (`max-size`, `max-file`).
+  - Image tags: prefer `:latest` unless pinning is required for stability/regression control.
+- Homelab access/capabilities:
+  - Git workstations only: use laptop/workstation clones (for example Mjolnir/Loki) for git operations; do not rely on server-side git pull for routine sync.
+  - SSH hosts Cursor can use: explicitly list allowed hosts per project.
+  - Available servers and roles: document host role boundaries (for example Odin public `*.valhal.uk`, Heimdall internal `*.h.valhal.uk`, Thor HA, Fenrir Git services).
+  - DNS routing rule: public/internal hostnames resolve to host LAN/WAN IPs, never container `172.0.0.x` addresses.
+  - Secrets rule: `.env`/secret files stay off git; keep `example.env` current when new variables are introduced.
+  - Non-negotiable infra constraints: note anything that cannot drift (IP ranges, DNS rewrite order, required middleware, required runtime paths).
+
+### 6.2 Live Project Resources and Time-Sensitive References
+
+Use this area to keep project/software decisions aligned with current docs and ecosystem changes.
+
+Template:
+- Project/service name:
+- Official docs:
+- Release notes/changelog URL:
+- API/schema references:
+- Community/issue tracker references:
+- Version constraints currently targeted:
+- "Check for updates before implementing" required: yes/no
+
+For services like `gethomepage.dev`, include links that should be consulted before changes so implementation reflects current behavior.
+Also include local operational references (host README/runbook/compose source-of-truth notes) when they are part of decision making.
+
+### 6.3 Greenfield Build Preferences
+
+Use this area to enforce preferred build patterns when starting from scratch.
+
+Template:
+- Preferred delivery format order (most preferred first):
+  1. Containerized service with web UI
+  2. macOS-native app (SwiftUI) when local app UX is needed
+  3. Script/CLI-only implementation
+- Platform preferences:
+  - Desktop: macOS-first decisions over Windows/Linux desktop-first assumptions
+  - Mobile: iOS-first when native app is requested
+  - Web: self-hostable web UI preferred when practical
+- Packaging/deployment defaults: Docker-first for services meant to run continuously
+- Tech stack preferences: choose stacks that fit self-hosted ops and straightforward maintenance
+- Explicitly avoid: platform choices that add unnecessary operational overhead for your environment
+- Expansion path to keep open (for example, iOS app with optional tvOS release path): document this at design time and avoid decisions that block it.
+
+Example preference interpretation:
+- If a tool can be delivered as a containerized web UI or a standalone script, prefer the containerized web UI unless instructed otherwise.
+- For Apple ecosystem apps, prefer SwiftUI and keep multi-platform extension paths open when practical.
+
+## 7. Inherited Execution Rules
+
+Execution behavior for thinking, simplicity, surgical edits, and goal-driven verification is inherited directly from `.cursor/rules/karpathy-guidelines.mdc`.
+
+Do not duplicate inherited sections here; keep this file focused on additive repo-specific preferences so updates stay consistent and low-maintenance.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
