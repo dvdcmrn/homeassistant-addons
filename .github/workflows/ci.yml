@@ -47,7 +47,7 @@ jobs:
     
     - name: Type check with mypy
       run: |
-        mypy custom_components/dvdcmrn_icons/ --ignore-missing-imports
+        mypy custom_components/cupertino_icons/ --ignore-missing-imports
     
     - name: Test with pytest
       run: |
@@ -72,11 +72,13 @@ jobs:
     - name: Validate integration structure
       run: |
         # Check if all required files exist
-        test -f custom_components/dvdcmrn_icons/__init__.py
-        test -f custom_components/dvdcmrn_icons/manifest.json
-        test -f custom_components/dvdcmrn_icons/services.yaml
+        test -f custom_components/cupertino_icons/__init__.py
+        test -f custom_components/cupertino_icons/manifest.json
+        test -f custom_components/cupertino_icons/services.yaml
+        test -f custom_components/cupertino_icons/icon_manager.py
+        test -f custom_components/cupertino_icons/iconset.js
         
         # Validate manifest.json
-        python -c "import json; json.load(open('custom_components/dvdcmrn_icons/manifest.json'))"
+        python -c "import json; json.load(open('custom_components/cupertino_icons/manifest.json'))"
         
         echo "✅ Integration structure is valid" 

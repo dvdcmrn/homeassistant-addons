@@ -6,13 +6,13 @@ This integration is distributed **only via HACS**. Users install it by adding th
 
 - Repository must be **public** on GitHub.
 - Set a short **description** and **topics** (e.g. `home-assistant`, `hacs`, `icons`, `sf-symbols`) for discoverability.
-- Ensure the default branch (e.g. `main`) contains the integration under `custom_components/dvdcmrn_icons/`.
+- Ensure the default branch (e.g. `main`) contains the integration under `custom_components/cupertino_icons/`.
 
 ## HACS requirements (already in repo)
 
 - **hacs.json** in the repo root (defines display name; `render_readme: true` uses README in HACS).
 - **info.md** in the repo root (optional; shown in HACS under the description).
-- **manifest.json** in `custom_components/dvdcmrn_icons/` with at least: `version`, `name`, `domain`, `documentation`, `issue_tracker`, `codeowners`.
+- **manifest.json** in `custom_components/cupertino_icons/` with at least: `version`, `name`, `domain`, `documentation`, `issue_tracker`, `codeowners`.
 
 ## Adding as a custom repository
 
@@ -21,7 +21,7 @@ Users add this repository in HACS:
 1. HACS → Integrations → three dots → Custom repositories.
 2. URL: `https://github.com/dvdcmrn/homeassistant-icons`
 3. Category: Integration → Add.
-4. Search for "dvdcmrn Home Assistant Icons" and download.
+4. Search for "Cupertino Icons" and download.
 
 To appear in the **default HACS store** (no custom repo needed), the integration must be submitted and accepted (see [HACS include process](https://hacs.dev/docs/publish/include/) and [home-assistant/brands](https://github.com/home-assistant/brands) for UI compliance).
 
@@ -29,7 +29,7 @@ To appear in the **default HACS store** (no custom repo needed), the integration
 
 Publishing GitHub releases is optional but recommended so users can choose a version in HACS:
 
-1. Update `version` in `custom_components/dvdcmrn_icons/manifest.json`.
+1. Update `version` in `custom_components/cupertino_icons/manifest.json`.
 2. Create a tag and release:
    ```bash
    git tag -a v1.0.1 -m "Release 1.0.1"

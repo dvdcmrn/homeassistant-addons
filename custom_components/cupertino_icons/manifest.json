@@ -1,0 +1,11 @@
+{
+  "domain": "cupertino_icons",
+  "name": "Cupertino Icons",
+  "version": "1.0.0",
+  "documentation": "https://github.com/dvdcmrn/homeassistant-icons",
+  "issue_tracker": "https://github.com/dvdcmrn/homeassistant-icons/issues",
+  "requirements": [],
+  "codeowners": ["@dvdcmrn"],
+  "iot_class": "calculated",
+  "integration_type": "system"
+}

@@ -1,85 +1,77 @@
-"""Tests for the dvdcmrn Home Assistant Icons integration."""
-import pytest
-from unittest.mock import Mock, patch
+"""Tests for YAML setup wiring."""
+
 from pathlib import Path
+from unittest.mock import AsyncMock, Mock, patch
 
-from custom_components.dvdcmrn_icons import async_setup, DOMAIN
-from custom_components.dvdcmrn_icons.icon_manager import DvdcmrnIconsIconManager
+import pytest
+
+from custom_components.cupertino_icons import (
+    DATA_EXTRA_MODULE_URL,
+    DOMAIN,
+    ICONS_DIR,
+    LOADER_URL,
+    async_setup,
+    handle_refresh_icons,
+)
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
-@pytest.fixture
-def mock_hass():
-    """Create a mock Home Assistant instance."""
+def _copy_fixture(tmp_path: Path, fixture_name: str, dest_name: str) -> Path:
+    dest = tmp_path / dest_name
+    dest.write_text(
+        (FIXTURES / fixture_name).read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    return dest
+
+
+def _mock_hass(tmp_path: Path) -> Mock:
     hass = Mock()
-    hass.config.config_dir = "/tmp/test_config"
+    hass.config.config_dir = str(tmp_path)
     hass.data = {}
+    hass.http = Mock()
+    hass.http.async_register_static_paths = AsyncMock()
+    hass.http.register_view = Mock()
+    hass.bus = Mock()
     return hass
 
 
-@pytest.fixture
-def mock_config():
-    """Create a mock configuration."""
-    return {DOMAIN: {}}
-
-
-class TestDvdcmrnIconsIntegration:
-    """Test the dvdcmrn Home Assistant Icons integration."""
+class TestIntegrationSetup:
+    """Tests for YAML setup wiring."""
 
     @pytest.mark.asyncio
-    async def test_async_setup(self, mock_hass, mock_config):
-        """Test that the integration sets up correctly."""
-        with patch('pathlib.Path.mkdir'):
-            result = await async_setup(mock_hass, mock_config)
-            assert result is True
-            assert DOMAIN in mock_hass.data
+    async def test_async_setup_creates_folder_and_registers_frontend(
+        self, tmp_path: Path
+    ) -> None:
+        hass = _mock_hass(tmp_path)
+        with patch("custom_components.cupertino_icons.async_register_admin_service"):
+            result = await async_setup(hass, {DOMAIN: {}})
 
+        assert DOMAIN == "cupertino_icons"
+        assert ICONS_DIR == "www/cupertino-icons"
+        assert LOADER_URL == "/cupertino-icons/iconset.js"
+        assert result is True
+        icons_dir = tmp_path / ICONS_DIR
+        assert icons_dir.is_dir()
+        assert (icons_dir / "README.txt").is_file()
+        assert LOADER_URL in hass.data[DATA_EXTRA_MODULE_URL]
+        hass.http.async_register_static_paths.assert_awaited()
+        assert hass.http.register_view.call_count == 2
+        assert DOMAIN in hass.data
 
-class TestDvdcmrnIconsIconManager:
-    """Test the icon manager."""
+    @pytest.mark.asyncio
+    async def test_refresh_icons_fires_event(self, tmp_path: Path) -> None:
+        hass = _mock_hass(tmp_path)
+        icons_dir = tmp_path / ICONS_DIR
+        icons_dir.mkdir(parents=True)
+        _copy_fixture(icons_dir, "house.svg", "house.svg")
+        hass.data[DOMAIN] = {"icons_path": icons_dir}
+        call = Mock()
+        call.hass = hass
 
-    def test_scan_icons_empty_directory(self, tmp_path):
-        """Test scanning icons from an empty directory."""
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        icons = manager.scan_icons()
-        assert icons == []
+        await handle_refresh_icons(call)
 
-    def test_scan_icons_with_files(self, tmp_path):
-        """Test scanning icons from a directory with SVG files."""
-        # Create test SVG files
-        (tmp_path / "house.svg").write_text("<svg></svg>")
-        (tmp_path / "heart.svg").write_text("<svg></svg>")
-        
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        icons = manager.scan_icons()
-        assert set(icons) == {"house", "heart"}
-
-    def test_get_icon_path_exists(self, tmp_path):
-        """Test getting icon path when file exists."""
-        svg_file = tmp_path / "house.svg"
-        svg_file.write_text("<svg></svg>")
-        
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        path = manager.get_icon_path("house")
-        assert path == str(svg_file)
-
-    def test_get_icon_path_not_exists(self, tmp_path):
-        """Test getting icon path when file doesn't exist."""
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        path = manager.get_icon_path("nonexistent")
-        assert path is None
-
-    def test_validate_icon_valid_svg(self, tmp_path):
-        """Test validating a valid SVG file."""
-        svg_file = tmp_path / "test.svg"
-        svg_file.write_text('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
-        
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        assert manager.validate_icon(svg_file) is True
-
-    def test_validate_icon_invalid_svg(self, tmp_path):
-        """Test validating an invalid SVG file."""
-        svg_file = tmp_path / "test.svg"
-        svg_file.write_text("not an svg")
-        
-        manager = DvdcmrnIconsIconManager(Mock(), tmp_path)
-        assert manager.validate_icon(svg_file) is False
+        hass.bus.async_fire.assert_called_once()
+        event_name, payload = hass.bus.async_fire.call_args.args
+        assert event_name == "cupertino_icons_refreshed"
+        assert payload["count"] == 1

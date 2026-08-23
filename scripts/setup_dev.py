@@ -62,29 +62,11 @@ def install_dependencies():
 
 
 def create_sample_icons():
-    """Create sample SVG icons for testing."""
-    icons_dir = Path("www/dvdcmrn_icons/icons")
-    icons_dir.mkdir(parents=True, exist_ok=True)
-    
-    sample_icons = {
-        "house.svg": '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/>
-</svg>''',
-        "heart.svg": '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-</svg>''',
-        "star.svg": '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-</svg>'''
-    }
-    
-    for filename, content in sample_icons.items():
-        icon_path = icons_dir / filename
-        if not icon_path.exists():
-            icon_path.write_text(content)
-            print(f"✅ Created sample icon: {filename}")
-    
-    print(f"📁 Sample icons created in {icons_dir}")
+    """Icons are not shipped. HA creates an empty www/cupertino-icons/ at runtime."""
+    print(
+        "No sample icons are created. Export SVGs from SF Symbols into www/cupertino-icons/"
+    )
+    return True
 
 
 def setup_git_hooks():
@@ -122,18 +104,18 @@ echo "✅ Code quality checks passed"
 
 def main():
     """Main setup function."""
-    print("Setting up dvdcmrn Home Assistant Icons development environment")
+    print("Setting up Cupertino Icons development environment")
     print("=" * 70)
     
     # Check if we're in the right directory
-    if not Path("custom_components/dvdcmrn_icons").exists():
+    if not Path("custom_components/cupertino_icons").exists():
         print("❌ Please run this script from the project root directory")
         sys.exit(1)
     
     steps = [
         ("Setting up virtual environment", setup_virtual_environment),
         ("Installing dependencies", install_dependencies),
-        ("Creating sample icons", create_sample_icons),
+        ("Skipping bundled icons", create_sample_icons),
         ("Setting up Git hooks", setup_git_hooks),
     ]
     

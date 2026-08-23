@@ -1,114 +1,60 @@
-# dvdcmrn Home Assistant Icons - Development Setup
+# Cupertino Icons - Development Setup
 
 This integration is distributed **only via HACS**; end users do not install it manually. This guide is for developers working on the repo.
 
 ## 1. Project Structure
 
-Create this folder structure in your VS Code workspace:
-
 ```
 homeassistant-icons/
 ├── custom_components/
-│   └── dvdcmrn_icons/
+│   └── cupertino_icons/
 │       ├── __init__.py
+│       ├── icon_manager.py
+│       ├── iconset.js
 │       ├── manifest.json
-│       ├── services.yaml
-│       └── icon_manager.py
-├── www/
-│   └── dvdcmrn_icons/
-│       └── icons/
-│           └── (SF Symbol SVGs will go here)
+│       └── services.yaml
 ├── docs/
 │   ├── SETUP.md
 │   └── PROJECT_SETUP.md
 ├── scripts/
-│   └── export_sf_symbols.py
+│   └── validate_sf_icons.py
+├── tests/
+│   └── fixtures/
 ├── hacs.json
 ├── info.md
 ├── README.md
 └── requirements.txt
 ```
 
-## 2. VS Code Setup
+User-exported SVGs live on the Home Assistant host in `config/www/cupertino-icons/`, not in this repository.
 
-### Install Python Extension
-- Install the "Python" extension by Microsoft
-- Install the "Home Assistant Config Helper" extension
+## 2. Local tests
 
-### Create Virtual Environment
 ```bash
 cd homeassistant-icons
 python3 -m venv venv
-source venv/bin/activate  # On macOS/Linux
-pip install homeassistant
+source venv/bin/activate
+pip install -r requirements.txt
+pytest tests/ -v
 ```
 
-### VS Code Settings
-Create `.vscode/settings.json`:
-```json
-{
-    "python.defaultInterpreterPath": "./venv/bin/python",
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "files.associations": {
-        "*.yaml": "home-assistant"
-    }
-}
+On a machine without Home Assistant installed, `tests/conftest.py` stubs the HA imports so icon-manager tests still run.
+
+## 3. How icons are registered
+
+1. `async_setup` creates `www/cupertino-icons/` and registers `/cupertino-icons/iconset.js` on `frontend_extra_module_url`.
+2. `iconset.js` sets `window.customIcons["sf"]`.
+3. The frontend fetches `/cupertino-icons/list` and `/cupertino-icons/icon/<name>`.
+4. `homepod.fill.svg` is served as `sf:homepod-fill`. Xcode symbol templates are rejected.
+
+## 4. Validating exports
+
+```bash
+python3 scripts/validate_sf_icons.py /path/to/exported_svgs
 ```
 
-## 3. SF Symbols Export Process
+Use **File → Export Image…** (SVG) from SF Symbols. Do not use **File → Export Symbol…**.
 
-### Method 1: Using SF Symbols App + Python Script
-The SF Symbols app allows you to export individual symbols. We'll create a Python script to batch process them.
+## 5. Manifest
 
-### Method 2: Command Line Tool (Recommended)
-Use the `sf-symbols-extractor` tool or create a custom AppleScript/Shell script.
-
-## 4. Home Assistant Integration Files
-
-### manifest.json
-Must include `issue_tracker` and other keys required by HACS. Example:
-```json
-{
-  "domain": "dvdcmrn_icons",
-  "name": "dvdcmrn Home Assistant Icons",
-  "version": "1.0.0",
-  "documentation": "https://github.com/dvdcmrn/homeassistant-icons",
-  "issue_tracker": "https://github.com/dvdcmrn/homeassistant-icons/issues",
-  "requirements": [],
-  "codeowners": ["@dvdcmrn"],
-  "iot_class": "local_polling"
-}
-```
-
-### __init__.py
-```python
-"""dvdcmrn Home Assistant Icons integration."""
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.typing import ConfigType
-
-DOMAIN = "dvdcmrn_icons"
-
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the dvdcmrn Home Assistant Icons integration."""
-    # Register the icon provider
-    hass.data[DOMAIN] = {}
-    return True
-```
-
-## 5. Icon Management
-
-The integration will:
-1. Monitor the `www/dvdcmrn_icons/icons/` directory
-2. Register available icons with Home Assistant
-3. Provide the `sf:` prefix for icon usage
-4. Handle SVG optimization for web use
-
-## 6. Export Script Requirements
-
-The export script needs to:
-- Convert SF Symbols to SVG format
-- Optimize SVGs for web use
-- Handle naming conventions
-- Batch process multiple icons
-- Provide a UI for icon selection
+`custom_components/cupertino_icons/manifest.json` must include `issue_tracker` and other HACS-required keys. `iot_class` is `calculated` (no device polling).

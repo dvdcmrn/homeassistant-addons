@@ -1,11 +1,11 @@
-# dvdcmrn Home Assistant Icons – Setup
+# Cupertino Icons – Setup
 
-This integration is installed **only via HACS**. Manual installation is not supported.
+This integration is installed **only via HACS**. Manual installation is not supported. It ships no SF Symbols; you export the SVGs you want.
 
 ## Prerequisites
 
 - Home Assistant with [HACS](https://hacs.xyz/) installed
-- For exporting icons on macOS: SF Symbols app and Python 3.9+
+- For exporting icons: a Mac with the [SF Symbols](https://developer.apple.com/sf-symbols/) app
 
 ## Installation via HACS
 
@@ -13,7 +13,7 @@ This integration is installed **only via HACS**. Manual installation is not supp
 2. Click the three dots (top right) → **Custom repositories**.
 3. Add repository URL: `https://github.com/dvdcmrn/homeassistant-icons`
 4. Category: **Integration** → **Add**.
-5. Search for **dvdcmrn Home Assistant Icons** and click **Download**.
+5. Search for **Cupertino Icons** and click **Download**.
 6. Restart Home Assistant.
 
 ## Configuration
@@ -21,56 +21,51 @@ This integration is installed **only via HACS**. Manual installation is not supp
 Add to `configuration.yaml`:
 
 ```yaml
-dvdcmrn_icons:
+cupertino_icons:
 ```
 
-Restart Home Assistant. The integration creates `www/dvdcmrn_icons/icons/` in your config directory.
+Restart Home Assistant. The integration creates an empty `www/cupertino-icons/` folder in your config directory.
 
-## Adding icons
+## Exporting icons
 
-Put SVG files in `www/dvdcmrn_icons/icons/` on your Home Assistant server. File name = icon name (e.g. `house.svg` for `sf:house`).
+**Use File → Export Image…, not File → Export Symbol…**
 
-**Option A – Export script (macOS)**  
-Clone this repo, run `python3 scripts/export_sf_symbols.py --interactive --output ~/exported_icons`, then copy the generated SVGs to `www/dvdcmrn_icons/icons/` (Samba, SSH, File editor, etc.).
+Export Symbol writes an Xcode template and will not render in dashboards.
 
-**Option B – Manual**  
-In the SF Symbols app, copy a symbol as SVG and save it into `www/dvdcmrn_icons/icons/` with the correct name.
+1. Open SF Symbols and select a symbol (for example `homepod.fill`).
+2. Set weight to **Regular** (or the weight you want).
+3. **File → Export Image…** → format **SVG**.
+4. Keep Apple's dotted filename: `homepod.fill.svg`.
+5. Copy the file to `www/cupertino-icons/` on the Home Assistant host (Samba, SSH, or File Editor).
+6. Call **cupertino_icons.refresh_icons** or restart, then hard-reload the browser.
 
-After adding icons, call **dvdcmrn_icons.refresh_icons** or restart Home Assistant.
+Optional: right-click → **Copy Image as SVG**, paste into `homepod.fill.svg`.
+
+On a Mac, validate before copying:
+
+```bash
+python3 scripts/validate_sf_icons.py ~/exported_icons
+```
+
+## Naming
+
+`homepod.fill.svg` is used as `icon: sf:homepod-fill`. Dots become hyphens. A hyphenated filename is accepted if the dotted file is missing.
 
 ## Usage
 
-Use the `sf:` prefix in dashboards:
-
 ```yaml
 type: button
-entity: light.living_room
-icon: sf:house
-```
-
-Example:
-
-```yaml
-type: entities
-entities:
-  - entity: light.living_room
-    icon: sf:house
-    name: Living Room
-  - entity: sensor.temperature
-    icon: sf:thermometer
-    name: Temperature
-  - entity: switch.fan
-    icon: sf:wind
-    name: Fan
+entity: media_player.living_room_homepod
+icon: sf:homepod-fill
 ```
 
 ## Services
 
-- **dvdcmrn_icons.refresh_icons** – Refresh the list of available icons.
+- **cupertino_icons.refresh_icons** – Rescan `www/cupertino-icons` after adding files.
 
 ## Troubleshooting
 
-- Icons not showing: Check `www/dvdcmrn_icons/icons/`, file names (e.g. `house.svg`), then `dvdcmrn_icons.refresh_icons` or restart.
-- Export script: Requires SF Symbols app and AppleScript; use `--interactive` for debugging.
+- Icons not showing: check `www/cupertino-icons/`, filenames, then refresh/restart and hard-reload.
+- Blank icon: re-export with **File → Export Image…** (SVG), not Export Symbol.
 
 SF Symbols are copyright Apple Inc. This integration is for personal use and is not affiliated with Apple.
