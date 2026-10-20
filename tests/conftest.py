@@ -67,6 +67,11 @@ def _install_homeassistant_stub() -> None:
 
 
 try:
-    import homeassistant  # noqa: F401
-except ImportError:
+    from homeassistant.components.http import StaticPathConfig  # noqa: F401
+except (ImportError, AttributeError):
     _install_homeassistant_stub()
+else:
+    import homeassistant.components.http as ha_http
+
+    if not hasattr(ha_http, "StaticPathConfig"):
+        _install_homeassistant_stub()
