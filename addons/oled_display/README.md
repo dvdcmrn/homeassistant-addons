@@ -49,7 +49,7 @@ display:
 
 1. Start the add-on and read the logs.
 2. **Hard power-off reboot** 2–3 times (not just Restart in the UI).
-3. Confirm I2C: `i2cdetect -y 1` on the **host** via `ssh root@thor -p 22222` (not the Terminal & SSH add-on shell).
+3. Confirm I2C: `i2cdetect -y 1` on the **host** via debug SSH (for example `ssh root@homeassistant.local -p 22222`, not the Terminal & SSH add-on shell).
 4. When `0x3c` appears, the OLED should initialize on bus **1**.
 
 Set **`enable_i2c: false`** and **`enable_ssh: false`** after the first successful setup if you prefer.
@@ -87,7 +87,7 @@ Older 1.4.x installs used **`devices`** + **`gpio`** without **`full_access`**, 
 | `show_title` | Whether to show the title | true |
 | `show_temperature` | Whether to show temperature with title | true |
 | `debug_mode` | Run in debug mode (console output only) | false |
-| `enable_i2c` | Run Pi4EnableI2C-style boot configurator on start | true |
+| `enable_i2c` | Run Pi4EnableI2C-style boot configurator on start | false |
 | `enable_ssh` | Run HassOsEnableSSH-style configurator (port 22222) | false |
 | `ssh_public_key` | Full line from your `id_ed25519.pub` / `id_rsa.pub` | (empty) |
 

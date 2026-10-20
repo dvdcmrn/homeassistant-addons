@@ -1,21 +1,21 @@
 #!/usr/bin/with-contenv bash
 
-# Pi5-I2C - Enhanced I2C enablement for Raspberry Pi (Pi 4/5) on Home Assistant OS
+# pi5_i2c_enable.sh - I2C enablement helper for Raspberry Pi (Pi 4/5) on Home Assistant OS
 # Based on HassOSConfigurator by adamoutler: https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C
-# Integrated into OLED System Monitor add-on
+# Standalone script (formerly Pi5-I2C/); the OLED add-on uses enable_i2c.sh at runtime when configured.
 
 set -euo pipefail
 
 log_info() {
-    echo "[Pi5-I2C] $*"
+    echo "[pi5-i2c-enable] $*"
 }
 
 log_warn() {
-    echo "[Pi5-I2C][WARN] $*"
+    echo "[pi5-i2c-enable][WARN] $*"
 }
 
 log_error() {
-    echo "[Pi5-I2C][ERROR] $*"
+    echo "[pi5-i2c-enable][ERROR] $*"
 }
 
 # I2C configuration parameters

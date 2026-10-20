@@ -1,4 +1,4 @@
-# Local troubleshooting and example files (may contain private HA config)
+# Local troubleshooting (may contain private HA config)
 local/
 
 # Secrets and credentials — never commit
@@ -14,19 +14,104 @@ secrets.yaml
 **/*_rsa
 **/*_ed25519
 
-# OS files
-.DS_Store
-*.swp
-*.swo
-*~
-
-# Python cache
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 *.pyc
 *.pyo
 
-# Editor files
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE / editor
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 *.sublime-project
 *.sublime-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Home Assistant
+config/
+*.log
+.homeassistant/
+
+# Exported symbols (temporary)
+exported_symbols/
+exported_icons/
+temp/
+*.tmp
+
+# Documentation build
+docs/_build/
+site/
+/site
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints
+
+# pyenv / pipenv
+.python-version
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Spyder / Rope
+.spyderproject
+.spyproject
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

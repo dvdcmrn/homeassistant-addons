@@ -1,0 +1,4 @@
+refresh_icons:
+  name: Refresh Icons
+  description: Rescan www/cupertino-icons after adding or replacing SVG files
+  fields: {}

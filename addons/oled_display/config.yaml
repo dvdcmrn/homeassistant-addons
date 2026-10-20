@@ -1,6 +1,6 @@
 name: "OLED System Monitor"
 description: "System stats on an OLED display; optional HAOS I2C and debug SSH setup"
-version: "1.5.0"
+version: "1.5.1"
 slug: "oled_display"
 panel_icon: "mdi:monitor-dashboard"
 init: false
@@ -9,7 +9,7 @@ arch:
   - armhf
   - armv7
 startup: application
-boot: auto
+boot: manual
 full_access: true
 apparmor: false
 privileged:
@@ -30,7 +30,7 @@ options:
     show_title: true
     show_temperature: true
     debug_mode: false
-    enable_i2c: true
+    enable_i2c: false
     enable_ssh: false
     ssh_public_key: ""
   metrics:
