@@ -1,0 +1,6 @@
+[tool.black]
+extend-exclude = '''
+/(
+  addons/oled_display/rootfs
+)/
+'''

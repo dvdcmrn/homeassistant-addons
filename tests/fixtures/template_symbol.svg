@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3300 2200">
+  <g id="Guides"></g>
+  <g id="Regular-M">
+    <path d="M10 10 L20 20"/>
+  </g>
+  <g id="Bold-M">
+    <path d="M8 8 L22 22"/>
+  </g>
+</svg>

@@ -1,0 +1,137 @@
+# dvdcmrn-dark-highcontrast
+# High contrast dark theme: 100% black base, dimmed text/borders, palette accents.
+# https://www.home-assistant.io/integrations/frontend/#defining-themes
+#
+# Structure: modes.dark only. card-mod-theme at top level so card-mod and dashboards can reference this theme.
+# Plugin support: card-mod (card-mod-theme), Mushroom (mush-*, ha-chip-text-color, light-grey-color), HA core.
+#
+# Palette: Red #FF5555  Orange #FFB86C  Yellow #F1FA8C  Green #50FA7B  Cyan #8BE9FD  Purple #BD93F9  Pink #FF79C6
+
+dvdcmrn-dark-highcontrast:
+  card-mod-theme: 'dvdcmrn-dark-highcontrast'
+  ha-view-sections-column-max-width: 100vw
+  modes:
+    dark:
+      # --- Palette (for reference / card-mod) ---
+      palette-red: "#FF5555"
+      palette-orange: "#FFB86C"
+      palette-yellow: "#F1FA8C"
+      palette-green: "#50FA7B"
+      palette-cyan: "#8BE9FD"
+      palette-purple: "#BD93F9"
+      palette-pink: "#FF79C6"
+
+      # --- Text: slightly dimmed ---
+      primary-text-color: "rgba(255, 255, 255, 0.88)"
+      secondary-text-color: "rgba(255, 255, 255, 0.6)"
+      text-primary-color: "rgba(255, 255, 255, 0.88)"
+      disabled-text-color: "rgba(255, 255, 255, 0.35)"
+      section-header-text-color: "rgba(255, 255, 255, 0.88)"
+
+      # --- Main interface colors (palette) ---
+      primary-color: "#BD93F9"
+      dark-primary-color: "#9d7ad9"
+      light-primary-color: "#8BE9FD"
+      accent-color: "#8BE9FD"
+
+      # --- Borders: cyan for high contrast ---
+      divider-color: "#8BE9FD"
+      ha-card-border-radius: "12px"
+      ha-card-border-color: "#8BE9FD"
+      ha-card-border-width: "1px"
+
+      # --- Backgrounds: 100% black ---
+      primary-background-color: "#000000"
+      secondary-background-color: "#000000"
+      card-background-color: "#000000"
+      code-editor-background-color: "#000000"
+      app-header-background-color: "#000000"
+      app-header-text-color: "rgba(255, 255, 255, 0.88)"
+      app-header-edit-background-color: "#000000"
+      app-header-edit-text-color: "rgba(255, 255, 255, 0.88)"
+
+      # --- Sidebar: black ---
+      sidebar-background-color: "#000000"
+      sidebar-text-color: "rgba(255, 255, 255, 0.6)"
+      sidebar-icon-color: "rgba(255, 255, 255, 0.5)"
+      sidebar-selected-background-color: "#000000"
+      sidebar-selected-text-color: "#BD93F9"
+      sidebar-selected-icon-color: "#BD93F9"
+
+      # --- Interactive / surfaces: very dark grey ---
+      paper-listbox-background-color: "#000000"
+      paper-card-background-color: "#000000"
+      paper-dialog-background-color: "#000000"
+      paper-item-icon-color: "rgba(255, 255, 255, 0.5)"
+      paper-item-icon-active-color: "#BD93F9"
+      material-secondary-background-color: "#000000"
+      mdc-theme-surface: "#000000"
+      mdc-theme-background: "#000000"
+      input-fill-color: "#000000"
+      input-idle-line-color: "#8BE9FD"
+      input-hover-line-color: "#8BE9FD"
+      input-ink-color: "rgba(255, 255, 255, 0.88)"
+      input-label-ink-color: "rgba(255, 255, 255, 0.6)"
+      mdc-text-field-fill-color: "#000000"
+      mdc-text-field-idle-line-color: "#8BE9FD"
+      mdc-text-field-hover-line-color: "#8BE9FD"
+      mdc-text-field-ink-color: "rgba(255, 255, 255, 0.88)"
+      mdc-text-field-label-ink-color: "rgba(255, 255, 255, 0.6)"
+
+      # --- Buttons / toggles ---
+      mdc-theme-primary: "#BD93F9"
+      mdc-theme-secondary: "#8BE9FD"
+      mdc-theme-on-primary: "#000000"
+      mdc-theme-on-secondary: "#000000"
+      mdc-theme-on-surface: "rgba(255, 255, 255, 0.88)"
+      paper-button-ink-color: "#BD93F9"
+      toggle-button-color: "#BD93F9"
+      switch-checked-color: "#BD93F9"
+      switch-unchecked-color: "#000000"
+      switch-checked-button-color: "#8BE9FD"
+      switch-unchecked-button-color: "rgba(255, 255, 255, 0.5)"
+      switch-checked-track-color: "#BD93F9"
+      switch-unchecked-track-color: "#000000"
+      paper-toggle-button-checked-bar-color: "#BD93F9"
+      paper-toggle-button-checked-button-color: "#8BE9FD"
+      paper-toggle-button-unchecked-bar-color: "#000000"
+      paper-toggle-button-unchecked-button-color: "rgba(255, 255, 255, 0.5)"
+
+      # --- Sliders ---
+      slider-color: "#BD93F9"
+      slider-secondary-color: "#8BE9FD"
+      slider-bar-color: "rgba(255, 255, 255, 0.2)"
+      paper-slider-knob-color: "#BD93F9"
+      paper-slider-active-color: "#BD93F9"
+      paper-slider-container-color: "rgba(255, 255, 255, 0.15)"
+
+      # --- States / badges (palette) ---
+      state-icon-color: "rgba(255, 255, 255, 0.45)"
+      state-icon-active-color: "#50FA7B"
+      state-icon-unavailable-color: "rgba(255, 255, 255, 0.25)"
+      error-color: "#FF5555"
+      error-state-color: "#FF5555"
+      label-badge-red: "#FF5555"
+      label-badge-blue: "#8BE9FD"
+      label-badge-green: "#50FA7B"
+      label-badge-yellow: "#F1FA8C"
+      label-badge-grey: "rgba(255, 255, 255, 0.4)"
+      label-badge-background-color: "#000000"
+      label-badge-text-color: "rgba(255, 255, 255, 0.88)"
+
+      # --- Scrollbar / toast ---
+      scrollbar-thumb-color: "rgba(255, 255, 255, 0.2)"
+      paper-toast-background-color: "#000000"
+      paper-toast-color: "rgba(255, 255, 255, 0.88)"
+
+      # --- Data table ---
+      data-table-background-color: "#000000"
+      table-row-background-color: "#000000"
+      table-row-alternative-background-color: "#000000"
+
+      # --- Mushroom cards (mushroom-theme / Mushroom card-mod) ---
+      mush-title-font-size: "15px"
+      mush-title-font-weight: "500"
+      mush-rgb-grey: "128, 128, 128"
+      ha-chip-text-color: "rgba(255, 255, 255, 0.88)"
+      light-grey-color: "rgba(255, 255, 255, 0.4)"

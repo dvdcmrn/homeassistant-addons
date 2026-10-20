@@ -1,50 +1,106 @@
-# DVDCMRN Home Assistant Add-ons
+# Home Assistant (dvdcmrn)
 
-My personal Home Assistant add-on library featuring custom add-ons for enhanced functionality.
+One repository for David Cameron's Home Assistant add-ons, HACS integrations, themes, and related tooling.
 
-## Repository Information
+- **Repository URL (after rename):** https://github.com/dvdcmrn/homeassistant
+- **Current URL:** https://github.com/dvdcmrn/homeassistant-addons
+- **Maintainer:** [dvdcmrn](https://github.com/dvdcmrn)
 
-- **Repository URL**: https://github.com/dvdcmrn/homeassistant-addons
-- **Maintainer**: [dvdcmrn](https://github.com/dvdcmrn)
+## Contents
 
-## Add-ons
+| Path | Purpose |
+| --- | --- |
+| `repository.yaml` | Home Assistant Supervisor add-on store index |
+| `addons/oled_display/` | OLED System Monitor add-on |
+| `hacs.json` | HACS metadata for the Cupertino Icons integration |
+| `custom_components/cupertino_icons/` | SF Symbols (`sf:`) icon integration (HACS) |
+| `brand/` | Integration brand assets (`icon.png`) for HACS / home-assistant/brands |
+| `themes/` | YAML themes (manual install; not a HACS theme repo) |
+| `icons/` | Optional reference SVGs (no Apple symbol artwork shipped) |
+| `scripts/` | Development and HAOS helper scripts |
+| `tests/` | Python tests for Cupertino Icons |
 
-### 1. OLED System Monitor
+---
 
-Display system information on an OLED display connected to your Home Assistant device via I2C.
+## Add-on store (Supervisor)
 
-**Features:**
-- Support for SSD1306 and SH1106 OLED displays
-- Customizable metrics (CPU, RAM, disk usage, temperature, uptime)
-- Configurable display settings (contrast, rotation)
-- Network information display
-- Custom text support
-- Visual bar graphs for usage metrics
-- Automatic I2C device detection
-- Debug mode for testing without OLED display
+1. Open **Settings** → **Add-ons** → **Add-on store**.
+2. Open the menu (top right) → **Repositories**.
+3. Add: `https://github.com/dvdcmrn/homeassistant` (or `homeassistant-addons` until the repo is renamed).
+4. Install **OLED System Monitor** from the store.
 
-**Latest Version**: 1.5.0
+Details: [addons/oled_display/README.md](./addons/oled_display/README.md)
 
-**Installation:**
-1. Add this repository to your Home Assistant instance
-2. Install the "OLED System Monitor" add-on
-3. Configure the add-on with your display settings
-4. Start the add-on
+---
 
-**HAOS setup (1.5.0+):** Built-in [Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C) and [HassOsEnableSSH](https://github.com/adamoutler/HassOSConfigurator/tree/main/HassOsEnableSSH) configurators using the same `full_access` manifest as adamoutler's HassOSConfigurator add-ons. Reinstall when upgrading from 1.4.x.
+## HACS: Cupertino Icons (integration)
 
-For detailed configuration options, troubleshooting, and I2C setup instructions, see the [OLED System Monitor documentation](./oled-display/README.md).
+This repo is a **custom HACS integration** repository. Themes are **not** installed through HACS from this repo (HACS does not support integration + theme in one repo).
 
-## Adding This Repository
+1. Open **HACS** → **Integrations** → menu → **Custom repositories**.
+2. Add the repository URL and category **Integration**.
+3. Search for **Cupertino Icons**, download, and restart Home Assistant.
+4. Add to `configuration.yaml`:
 
-To add this repository to your Home Assistant instance:
+```yaml
+cupertino_icons:
+```
 
-1. Go to **Supervisor** → **Add-on Store**
-2. Click the three dots menu (⋮) in the top right corner
-3. Select **Repositories**
-4. Add this repository URL: `https://github.com/dvdcmrn/homeassistant-addons`
-5. Click **Add**
+5. Export symbols on a Mac with [SF Symbols](https://developer.apple.com/sf-symbols/) using **File → Export Image…** (SVG), not **Export Symbol…**.
+6. Copy SVGs into `www/cupertino-icons/` on your Home Assistant host.
+7. Call `cupertino_icons.refresh_icons` or restart, then hard-reload the browser.
+
+Dashboard example:
+
+```yaml
+icon: sf:homepod-fill
+```
+
+Validate exports locally:
+
+```bash
+python3 scripts/validate_sf_icons.py /path/to/exported/icons
+```
+
+More detail: [info.md](./info.md) and the Cupertino Icons section in this README's history in `docs/SETUP.md`.
+
+---
+
+## Themes (manual install)
+
+HACS theme repositories must be separate from integrations. Copy files from `themes/` into your config:
+
+1. Ensure `configuration.yaml` includes:
+
+```yaml
+frontend:
+  themes: !include_dir_merge_named themes
+```
+
+2. Copy desired `themes/*.yaml` to `/config/themes/` on your Home Assistant host.
+3. **Developer Tools** → **Services** → call `frontend.reload_themes`.
+4. Select the theme under **Profile** → **Theme**.
+
+See [themes/README.md](./themes/README.md) for available themes.
+
+---
+
+## Development
+
+```bash
+python3 scripts/setup_dev.py
+source venv/bin/activate
+pytest tests/ -v
+```
+
+CI runs lint, typecheck, and tests on push/PR. See [AGENTS.md](./AGENTS.md) for agent notes.
+
+---
+
+## License and disclaimer
+
+Add-ons and integration code are licensed as described in [LICENSE](./LICENSE). Cupertino Icons does **not** ship SF Symbols artwork. SF Symbols are copyright Apple Inc. This project is not affiliated with Apple.
 
 ## Support
 
-For issues, feature requests, or questions about these add-ons, please visit the [GitHub repository](https://github.com/dvdcmrn/homeassistant-addons).
+Open an issue at https://github.com/dvdcmrn/homeassistant/issues (after rename) or on the current repository URL.

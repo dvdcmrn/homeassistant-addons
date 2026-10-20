@@ -2,6 +2,10 @@
 
 All notable changes to the "OLED System Monitor" Home Assistant add-on are documented in this file.
 
+## 1.5.1 - 2026-10-20
+- Default **`boot: manual`** and **`system.enable_i2c: false`** to avoid crash-loops and unintended boot config writes when no display is attached
+- Repository layout: add-on moved to `addons/oled_display/` in the unified `dvdcmrn/homeassistant` monorepo
+
 ## 1.5.0 - 2026-06-20
 - Match [HassOSConfigurator](https://github.com/adamoutler/HassOSConfigurator) manifest: **`full_access: true`**, **`apparmor: false`**, **`SYS_ADMIN`** (no **`devices`** / **`gpio`** — those forced **`protected: true`** and hid the Info-tab protection toggle)
 - Built-in **[Pi4EnableI2C](https://github.com/adamoutler/HassOSConfigurator/tree/main/Pi4EnableI2C)** configurator (`system.enable_i2c`, default **true**)
@@ -75,7 +79,7 @@ All notable changes to the "OLED System Monitor" Home Assistant add-on are docum
 - Support for both `dtparam=i2c_vc=on` and `dtparam=i2c_arm=on` configuration
 - Enhanced Raspbian support with i2c-bcm2708 module loading
 - Improved error handling and protection mode detection
-- Added standalone [Pi4EnableI2C directory](../../Pi4EnableI2C/) for manual I2C setup
+- Added standalone I2C helper script at `scripts/pi5_i2c_enable.sh` for manual HAOS I2C setup
 - Updated documentation with proper attribution and detailed instructions
 
 ## 1.0.0
