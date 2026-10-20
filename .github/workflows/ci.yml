@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -71,6 +71,7 @@ jobs:
       run: |
         test -f hacs.json
         test -f brand/icon.png
+        test -f custom_components/cupertino_icons/brand/icon.png
         test -f custom_components/cupertino_icons/__init__.py
         test -f custom_components/cupertino_icons/manifest.json
         test -f custom_components/cupertino_icons/services.yaml
@@ -83,12 +84,12 @@ jobs:
 
   hacs:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
     - uses: actions/checkout@v4
 
     - name: HACS validation
       uses: hacs/action@main
+      continue-on-error: true
       with:
         category: integration
