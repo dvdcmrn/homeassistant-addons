@@ -62,6 +62,8 @@ Validate exports locally:
 python3 scripts/validate_sf_icons.py /path/to/exported/icons
 ```
 
+On macOS you can batch-export with `python3 scripts/export_sf_symbols.py` (see script help); prefer **File → Export Image…** in SF Symbols when AppleScript export is unreliable.
+
 More detail: [info.md](./info.md) and the Cupertino Icons section in this README's history in `docs/SETUP.md`.
 
 ---
@@ -81,7 +83,17 @@ frontend:
 3. **Developer Tools** → **Services** → call `frontend.reload_themes`.
 4. Select the theme under **Profile** → **Theme**.
 
-See [themes/README.md](./themes/README.md) for available themes.
+Included themes (from **hass-themes** and live HA export):
+
+| File | Description |
+| --- | --- |
+| `dvdcmrn-theme.yaml` | GitHub-inspired palette |
+| `dvdcmrn-dracula.yaml` | Dracula-style variant |
+| `dvdcmrn-dark-highcontrast.yaml` | High-contrast dark (card-mod / Mushroom friendly) |
+
+See [themes/README.md](./themes/README.md) for details.
+
+Optional Mac export helper: `scripts/export_sf_symbols.py` (copy output to `www/cupertino-icons/`). Reference SVG: [icons/playstation.logo.svg](./icons/playstation.logo.svg) from legacy **pinnacles**.
 
 ---
 

@@ -19,6 +19,8 @@ frontend:
 
 | File | Description |
 | --- | --- |
-| `dvdcmrn-dark-highcontrast.yaml` | High-contrast dark theme (black base, Dracula-inspired palette accents). Supports card-mod and Mushroom. |
+| `dvdcmrn-theme.yaml` | GitHub-inspired light/dark palette (from legacy **hass-themes**). |
+| `dvdcmrn-dracula.yaml` | Dracula palette variant with card-mod hooks (from legacy **hass-themes**). |
+| `dvdcmrn-dark-highcontrast.yaml` | High-contrast dark theme (black base, palette accents). Supports card-mod and Mushroom. |
 
-Additional themes from the legacy `hass-themes` repository were not copied in this consolidation (private repo was not accessible to the automation token). Add `dvdcmrn-theme.yaml` and `dvdcmrn-dracula.yaml` here manually if you still need them, and review screenshots before publishing.
+Theme YAML was reviewed for secrets and hostnames before publish. README screenshots from **hass-themes** were not included; add your own previews if you document themes publicly.
